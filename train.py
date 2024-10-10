@@ -24,6 +24,7 @@ class Trainer(object):
         self.clip_grad = args.clip_grad
         self.cutmix_beta = args.cutmix_beta
         self.cutmix_prob = args.cutmix_prob
+        self.num_workers = args.num_workers
         self.model = model
         self.optim_name = 'none'
         self.min_lr = args.min_lr
@@ -164,7 +165,7 @@ class Trainer(object):
             handles.append([handle1,handle2, handle3, handle4 ])
 
         act_per_batch = []
-
+        torch.set_num_threads(self.num_workers)
         for i, batch in tqdm(enumerate(test_dl)):
             if i == 10:
                 break
