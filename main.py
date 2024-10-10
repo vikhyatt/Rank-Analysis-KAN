@@ -21,6 +21,8 @@ parser.add_argument('--epochs', type=int, default=300)
 parser.add_argument('--checkpoint-epoch', type=int, default=0)
 parser.add_argument('--init', default='default', choices=['default', 'uniform', 'xavier'])
 parser.add_argument('--init-scale', type=float, default=0.1)
+parser.add_argument('--grid-min', type=float, default=-2)
+parser.add_argument('--grid-max', type=float, default=2)
 # parser.add_argument('--precision', type=int, default=16)
 
 parser.add_argument('--patch-size', type=int, default=4)
@@ -53,6 +55,7 @@ parser.add_argument('--cutmix-prob', type=float, default=0.)
 
 args = parser.parse_args()
 args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+args.grid = [args.grid_min, args.grid_max]
 print(f'Device using: {args.device}')
 args.nesterov = not args.off_nesterov
 torch.random.manual_seed(args.seed)
@@ -75,7 +78,7 @@ if __name__=='__main__':
     with wandb.init(project='mlp_mixer', config=args, name=experiment_name):
         train_dl, test_dl = get_dataloaders(args)
         model = get_model(args)
-        model_configs = f"{args.model}_{args.dataset}_{args.optimizer}_{args.scheduler}_{args.lr}_PS{args.patch_size}_HSize{args.hidden_size}_HC{args.hidden_c}_HS{args.hidden_s}_NL{args.num_layers}_SM{args.skip_min}_PARAMS{sum(p.numel() for p in model.parameters() if p.requires_grad)}_init{args.init}_scale_{args.init_scale}_NG{args.num_grids}"
+        model_configs = f"{args.model}_{args.dataset}_{args.optimizer}_{args.scheduler}_{args.lr}_PS{args.patch_size}_HSize{args.hidden_size}_HC{args.hidden_c}_HS{args.hidden_s}_NL{args.num_layers}_SM{args.skip_min}_PARAMS{sum(p.numel() for p in model.parameters() if p.requires_grad)}_init{args.init}_scale_{args.init_scale}_NG{args.num_grids}_Grid{args.grid_min},{args.grid_max}"
         args.model_configs = model_configs
         
         print('Number of Learnable Parameters:',sum(p.numel() for p in model.parameters() if p.requires_grad))
