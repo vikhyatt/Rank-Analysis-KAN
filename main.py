@@ -52,7 +52,7 @@ parser.add_argument('--cutmix-beta', type=float, default=1.0)
 parser.add_argument('--cutmix-prob', type=float, default=0.)
 
 args = parser.parse_args()
-args.device = torch.device('cuda:5' if torch.cuda.is_available() else 'cpu')
+args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'Device using: {args.device}')
 args.nesterov = not args.off_nesterov
 torch.random.manual_seed(args.seed)
