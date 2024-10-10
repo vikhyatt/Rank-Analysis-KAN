@@ -23,12 +23,20 @@ from torch.autograd import Variable
 from typing import *
 
 class SplineLinear(nn.Linear):
-    def __init__(self, in_features: int, out_features: int, init_scale: float = 0.1, **kw) -> None:
+    def __init__(self, in_features: int, out_features: int, init_scale: float = 0.1,init = 'default', **kw) -> None:
         self.init_scale = init_scale
+        self.init = init
         super().__init__(in_features, out_features, bias=False, **kw)
 
     def reset_parameters(self) -> None:
-        nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        if self.init == 'default':
+            nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        elif self.init == 'uniform':
+            nn.init.uniform_(self.weight, a= -2*self.init_scale, b= 2*self.init_scale)
+        elif self.init == 'xavier':
+            nn.init.xavier_uniform_(self.weight, gain=10*self.init_scale)
+        else:
+            raise ValueError('Unsupported Initialization entered')
 
 class tied_SplineLinear(nn.Module):
     def __init__(self, in_features, out_features: int, init_scale: float = 0.1, degree = 3 , use_same_weight = True ,bias=False, **kw):
@@ -182,6 +190,7 @@ class FastKANLayer(nn.Module):
         use_same_weight = False,
         use_cpd = False,
         use_softmax_prod = False,
+        init = 'default',
     ) -> None:
         super().__init__()
         self.input_dim = input_dim
@@ -198,10 +207,10 @@ class FastKANLayer(nn.Module):
         if use_poly:
             self.rbf = PolyBasisFunction(degree_poly)
             if not use_same_fn:
-                self.spline_linear = SplineLinear(input_dim * (degree_poly+1), output_dim, spline_weight_init_scale)
+                self.spline_linear = SplineLinear(input_dim * (degree_poly+1), output_dim, spline_weight_init_scale, init = init)
             else:
                 if self.use_same_weight:
-                    self.spline_linear = SplineLinear(degree_poly + 1, output_dim, init_scale = spline_weight_init_scale)
+                    self.spline_linear = SplineLinear(degree_poly + 1, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
                     self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = degree_poly , use_same_weight = use_same_weight)
@@ -210,10 +219,10 @@ class FastKANLayer(nn.Module):
         else:
             self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids)
             if not use_same_fn:
-                self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale)
+                self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init)
             else:
                 if self.use_same_weight:
-                    self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale)
+                    self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
                     self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight)
