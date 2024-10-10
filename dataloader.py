@@ -104,8 +104,8 @@ def get_dataloaders(args):
     elif args.dataset == "imgnet":
         #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
         #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
-        train_ds = torchvision.datasets.ImageFolder('../../data/imagenet100/train', transform=train_transform)
-        test_ds = torchvision.datasets.ImageFolder('../../data/imagenet100/val', transform=test_transform)
+        train_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/train', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/val', transform=test_transform)
         args.num_classes = 100
         
     else:
