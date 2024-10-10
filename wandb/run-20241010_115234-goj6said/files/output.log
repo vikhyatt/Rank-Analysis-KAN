@@ -1,0 +1,28 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+10it [01:36,  9.61s/it]
+100%|██████████| 4/4 [00:02<00:00,  1.72it/s]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 222, in compute_svd
+    plt.savefig(f'svd_plots/Epoch {epoch}, SV for Layer {layer_id}, Init: {init},{self.model_configs}.jpg', dpi = 200, bbox_inches = 'tight')
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/pyplot.py", line 1228, in savefig
+    res = fig.savefig(*args, **kwargs)  # type: ignore[func-returns-value]
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/figure.py", line 3395, in savefig
+    self.canvas.print_figure(fname, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/backend_bases.py", line 2204, in print_figure
+    result = print_method(
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/backend_bases.py", line 2054, in <lambda>
+    print_method = functools.wraps(meth)(lambda *args, **kwargs: meth(
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/backends/backend_agg.py", line 513, in print_jpg
+    self._print_pil(filename_or_obj, "jpeg", pil_kwargs, metadata)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/backends/backend_agg.py", line 445, in _print_pil
+    mpl.image.imsave(
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/matplotlib/image.py", line 1676, in imsave
+    image.save(fname, **pil_kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/PIL/Image.py", line 2563, in save
+    fp = builtins.open(filename, "w+b")
+FileNotFoundError: [Errno 2] No such file or directory: '/home/vagrawal/Rank-Analysis-KAN/svd_plots/Epoch 1, SV for Layer 1, Init: uniform,kan_mixer_imgnet_adam_cosine_0.001_PS8_HSize128_HC512_HS64_NL4_SM1.0_PARAMS8688676_inituniform_scale_0.02.jpg'

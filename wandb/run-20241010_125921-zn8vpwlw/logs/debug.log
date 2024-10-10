@@ -1,0 +1,33 @@
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Current SDK version is 0.18.2
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Configure stats pid to 3469869
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Loading settings from /home/vagrawal/.config/wandb/settings
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Loading settings from /home/vagrawal/Rank-Analysis-KAN/wandb/settings
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Loading settings from environment variables: {}
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program_abspath': '/home/vagrawal/Rank-Analysis-KAN/main.py', 'program': '/home/vagrawal/Rank-Analysis-KAN/main.py'}
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:_log_setup():532] Logging user logs to /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_125921-zn8vpwlw/logs/debug.log
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:_log_setup():533] Logging internal logs to /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_125921-zn8vpwlw/logs/debug-internal.log
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:init():616] calling init triggers
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:init():623] wandb.init called with sweep_config: {}
+config: {'dataset': 'imgnet', 'model': 'kan_mixer', 'batch_size': 256, 'eval_batch_size': 128, 'num_workers': 12, 'seed': 3407, 'epochs': 600, 'checkpoint_epoch': 0, 'init': 'uniform', 'init_scale': 0.002, 'patch_size': 8, 'hidden_size': 128, 'hidden_c': 512, 'hidden_s': 64, 'num_layers': 4, 'num_grids': 8, 'drop_p': 0.0, 'use_ffcv': 0.0, 'off_act': False, 'is_cls_token': False, 'skip_min': 1.0, 'lr': 0.001, 'min_lr': 1e-06, 'momentum': 0.9, 'optimizer': 'adam', 'scheduler': 'cosine', 'beta1': 0.9, 'beta2': 0.99, 'weight_decay': 5e-05, 'off_nesterov': False, 'label_smoothing': 0.1, 'gamma': 0.1, 'warmup_epoch': 5, 'autoaugment': True, 'clip_grad': 0, 'cutmix_beta': 1.0, 'cutmix_prob': 0.5, 'device': device(type='cuda'), 'nesterov': True}
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:init():666] starting backend
+2024-10-10 12:59:21,601 INFO    MainThread:3469869 [wandb_init.py:init():670] sending inform_init request
+2024-10-10 12:59:21,602 INFO    MainThread:3469869 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-10-10 12:59:21,602 INFO    MainThread:3469869 [wandb_init.py:init():683] backend started and connected
+2024-10-10 12:59:21,605 INFO    MainThread:3469869 [wandb_init.py:init():778] updated telemetry
+2024-10-10 12:59:21,641 INFO    MainThread:3469869 [wandb_init.py:init():811] communicating run to backend with 90.0 second timeout
+2024-10-10 12:59:21,926 INFO    MainThread:3469869 [wandb_init.py:init():862] starting run threads in backend
+2024-10-10 12:59:22,930 INFO    MainThread:3469869 [wandb_run.py:_console_start():2464] atexit reg
+2024-10-10 12:59:22,930 INFO    MainThread:3469869 [wandb_run.py:_redirect():2312] redirect: wrap_raw
+2024-10-10 12:59:22,930 INFO    MainThread:3469869 [wandb_run.py:_redirect():2377] Wrapping output streams.
+2024-10-10 12:59:22,930 INFO    MainThread:3469869 [wandb_run.py:_redirect():2402] Redirects installed.
+2024-10-10 12:59:22,932 INFO    MainThread:3469869 [wandb_init.py:init():906] run started, returning control to user process
+2024-10-10 12:59:24,718 INFO    MainThread:3469869 [wandb_run.py:_config_callback():1393] config_cb None None {'dataset': 'imgnet', 'model': 'kan_mixer', 'batch_size': 256, 'eval_batch_size': 128, 'num_workers': 12, 'seed': 3407, 'epochs': 600, 'checkpoint_epoch': 0, 'init': 'uniform', 'init_scale': 0.002, 'patch_size': 8, 'hidden_size': 128, 'hidden_c': 512, 'hidden_s': 64, 'num_layers': 4, 'num_grids': 8, 'drop_p': 0.0, 'use_ffcv': 0.0, 'off_act': False, 'is_cls_token': False, 'skip_min': 1.0, 'lr': 0.001, 'min_lr': 1e-06, 'momentum': 0.9, 'optimizer': 'adam', 'scheduler': 'cosine', 'beta1': 0.9, 'beta2': 0.99, 'weight_decay': 5e-05, 'off_nesterov': False, 'label_smoothing': 0.1, 'gamma': 0.1, 'warmup_epoch': 5, 'autoaugment': True, 'clip_grad': 0, 'cutmix_beta': 1.0, 'cutmix_prob': 0.5, 'device': 'cuda', 'nesterov': True, 'padding': 28, 'size': 224, 'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225], 'num_classes': 100, 'model_configs': 'kan_mixer_imgnet_adam_cosine_0.001_PS8_HSize128_HC512_HS64_NL4_SM1.0_PARAMS8688676_inituniform_scale_0.002'}
+2024-10-10 13:35:50,017 INFO    MainThread:3469869 [wandb_run.py:_finish():2163] finishing run zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/zn8vpwlw
+2024-10-10 13:35:50,028 INFO    MainThread:3469869 [wandb_run.py:_atexit_cleanup():2427] got exitcode: 0
+2024-10-10 13:35:50,028 INFO    MainThread:3469869 [wandb_run.py:_restore():2409] restore
+2024-10-10 13:35:50,028 INFO    MainThread:3469869 [wandb_run.py:_restore():2415] restore done
+2024-10-10 13:35:52,056 INFO    MainThread:3469869 [wandb_run.py:_footer_history_summary_info():4042] rendering history
+2024-10-10 13:35:52,056 INFO    MainThread:3469869 [wandb_run.py:_footer_history_summary_info():4074] rendering summary
+2024-10-10 13:35:52,062 INFO    MainThread:3469869 [wandb_run.py:_footer_sync_info():4001] logging synced files

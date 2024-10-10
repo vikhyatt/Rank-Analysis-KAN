@@ -1,0 +1,18 @@
+{"time":"2024-10-10T18:38:28.067069676+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T18:38:28.067140001+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_183827-96yo4cwe/logs/debug-core.log"}
+{"time":"2024-10-10T18:38:28.068308705+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T18:38:28.112723208+02:00","level":"INFO","msg":"created new stream","id":"96yo4cwe"}
+{"time":"2024-10-10T18:38:28.112761546+02:00","level":"INFO","msg":"stream: started","id":"96yo4cwe"}
+{"time":"2024-10-10T18:38:28.112768957+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T18:38:28.112790489+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T18:38:28.112854075+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T18:38:28.351126052+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T18:38:28.351865602+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-10T19:05:10.650077962+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-10T19:05:10.652216602+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-10T19:05:12.297291947+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-10T19:05:13.54720103+02:00","level":"INFO","msg":"stream: closing","id":"96yo4cwe"}
+{"time":"2024-10-10T19:05:13.547219929+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T19:05:13.547242563+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T19:05:13.54726098+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"96yo4cwe"}}
+{"time":"2024-10-10T19:05:13.550742265+02:00","level":"INFO","msg":"stream: closed","id":"96yo4cwe"}

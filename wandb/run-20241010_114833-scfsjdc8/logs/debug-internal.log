@@ -1,0 +1,10 @@
+{"time":"2024-10-10T11:48:33.17415856+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T11:48:33.174207393+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_114833-scfsjdc8/logs/debug-core.log"}
+{"time":"2024-10-10T11:48:33.175503023+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T11:48:33.179465083+02:00","level":"INFO","msg":"created new stream","id":"scfsjdc8"}
+{"time":"2024-10-10T11:48:33.179489439+02:00","level":"INFO","msg":"stream: started","id":"scfsjdc8"}
+{"time":"2024-10-10T11:48:33.179493626+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"scfsjdc8"}}
+{"time":"2024-10-10T11:48:33.179506164+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"scfsjdc8"}}
+{"time":"2024-10-10T11:48:33.179498403+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"scfsjdc8"}}
+{"time":"2024-10-10T11:48:33.435418426+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T11:48:33.436513367+02:00","level":"INFO","msg":"Starting system monitor"}

@@ -1,0 +1,143 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_172458-qbqpsbi8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/qbqpsbi8
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 4836388
+0it [00:00, ?it/s]1it [00:05,  5.48s/it]2it [00:05,  2.45s/it]3it [00:06,  1.43s/it]4it [00:06,  1.05it/s]5it [00:06,  1.45it/s]6it [00:06,  1.89it/s]7it [00:06,  2.35it/s]8it [00:07,  2.79it/s]9it [00:07,  3.15it/s]10it [00:07,  3.50it/s]10it [00:07,  1.32it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.28it/s] 50%|█████     | 2/4 [00:00<00:00,  2.28it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.28it/s]100%|██████████| 4/4 [00:01<00:00,  2.28it/s]100%|██████████| 4/4 [00:01<00:00,  2.28it/s]
+0it [00:00, ?it/s]1it [00:00,  1.16it/s]2it [00:01,  2.07it/s]3it [00:01,  2.73it/s]4it [00:01,  3.25it/s]5it [00:01,  3.53it/s]6it [00:01,  3.80it/s]7it [00:02,  4.06it/s]8it [00:02,  4.24it/s]9it [00:02,  4.32it/s]10it [00:02,  4.43it/s]10it [00:02,  3.51it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.56it/s] 50%|█████     | 2/4 [00:00<00:00,  2.57it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.57it/s]100%|██████████| 4/4 [00:01<00:00,  2.56it/s]100%|██████████| 4/4 [00:01<00:00,  2.56it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+0it [00:00, ?it/s]1it [00:00,  1.22it/s]2it [00:01,  2.12it/s]3it [00:01,  2.81it/s]4it [00:01,  3.29it/s]5it [00:01,  3.68it/s]6it [00:01,  3.88it/s]7it [00:02,  4.06it/s]8it [00:02,  4.25it/s]9it [00:02,  4.38it/s]10it [00:02,  4.48it/s]10it [00:02,  3.58it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.44it/s] 50%|█████     | 2/4 [00:00<00:00,  2.43it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.44it/s]100%|██████████| 4/4 [00:01<00:00,  1.92it/s]100%|██████████| 4/4 [00:01<00:00,  2.08it/s]
+wandb: - 0.012 MB of 0.012 MB uploadedwandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:      acc ▂▁▁▁▁▁▂▂▃▂▃▃▅▄▅▄▅▅▅▆▆▃▂▇▃▆▇█▆▄▃▃▇▆▆▆█▅▂▇
+wandb:    epoch ▁▂▃▃▄▅▆▆▇█
+wandb:     loss █▇███▅▅▅▅▅▅▄▄▅▄▃▃▅▅▄▄▄▅▄▂▂▄▁▄▂▂▂▂▁▁▄▄▁▁▄
+wandb:       lr ▁▂▄▅▇█████
+wandb:  val_acc ▁▂▃▄▅▅▆▇▇█
+wandb: val_loss █▅▄▃▃▂▂▁▂▁
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.26923
+wandb:    epoch 10
+wandb:     loss 3.29324
+wandb:       lr 0.001
+wandb:  val_acc 0.3046
+wandb: val_loss 3.14969
+wandb: 
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/qbqpsbi8
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_172458-qbqpsbi8/logs
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_175154-ojut6vbu
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/ojut6vbu
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 2910244
+0it [00:00, ?it/s]1it [00:01,  1.22s/it]2it [00:01,  1.44it/s]3it [00:01,  1.96it/s]4it [00:02,  2.28it/s]5it [00:02,  2.49it/s]6it [00:02,  2.73it/s]7it [00:02,  3.22it/s]8it [00:03,  3.60it/s]9it [00:03,  3.95it/s]10it [00:03,  4.26it/s]10it [00:03,  2.78it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.28it/s] 50%|█████     | 2/4 [00:00<00:00,  2.28it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.28it/s]100%|██████████| 4/4 [00:01<00:00,  2.29it/s]100%|██████████| 4/4 [00:01<00:00,  2.29it/s]
+0it [00:00, ?it/s]1it [00:00,  1.32it/s]2it [00:00,  2.32it/s]3it [00:01,  2.98it/s]4it [00:01,  3.57it/s]5it [00:01,  3.91it/s]6it [00:01,  4.23it/s]7it [00:01,  4.56it/s]8it [00:02,  4.76it/s]9it [00:02,  4.96it/s]10it [00:02,  5.02it/s]10it [00:02,  3.94it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.32it/s] 50%|█████     | 2/4 [00:00<00:00,  2.31it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.38it/s]100%|██████████| 4/4 [00:01<00:00,  2.45it/s]100%|██████████| 4/4 [00:01<00:00,  2.41it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+0it [00:00, ?it/s]1it [00:00,  1.01it/s]2it [00:01,  1.91it/s]3it [00:01,  2.66it/s]4it [00:01,  3.16it/s]5it [00:01,  3.11it/s]6it [00:02,  2.58it/s]7it [00:03,  2.27it/s]8it [00:03,  2.09it/s]9it [00:04,  1.98it/s]10it [00:04,  1.92it/s]10it [00:04,  2.13it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:01<00:05,  2.00s/it]/var/spool/slurmd/job164632/slurm_script: line 26: 4133788 Killed                  python main.py --init 'default' --init-scale 0.1 --num-grids 2 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size 128 --num-workers 12 --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128 --batch-size 256 --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_180926-4s7w2scz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/4s7w2scz
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 4836388
+0it [00:00, ?it/s]1it [00:03,  3.89s/it]2it [00:04,  1.80s/it]3it [00:04,  1.11s/it]4it [00:04,  1.32it/s]5it [00:04,  1.78it/s]6it [00:05,  2.26it/s]7it [00:05,  2.73it/s]8it [00:05,  3.14it/s]9it [00:05,  3.47it/s]10it [00:06,  3.77it/s]10it [00:06,  1.66it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.31it/s] 50%|█████     | 2/4 [00:00<00:00,  2.31it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.31it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]
+0it [00:00, ?it/s]1it [00:01,  1.08s/it]2it [00:01,  1.74it/s]3it [00:01,  2.42it/s]4it [00:01,  2.96it/s]5it [00:01,  3.36it/s]6it [00:02,  3.68it/s]7it [00:02,  3.98it/s]8it [00:02,  4.12it/s]9it [00:02,  4.23it/s]10it [00:03,  4.45it/s]10it [00:03,  3.28it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.44it/s] 50%|█████     | 2/4 [00:00<00:00,  2.43it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.42it/s]100%|██████████| 4/4 [00:01<00:00,  2.42it/s]100%|██████████| 4/4 [00:01<00:00,  2.42it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+0it [00:00, ?it/s]1it [00:01,  1.09s/it]2it [00:01,  1.71it/s]3it [00:01,  2.39it/s]4it [00:01,  2.92it/s]5it [00:01,  3.36it/s]6it [00:02,  3.65it/s]7it [00:02,  3.93it/s]8it [00:02,  4.02it/s]9it [00:02,  4.21it/s]10it [00:03,  4.37it/s]10it [00:03,  3.24it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.32it/s] 50%|█████     | 2/4 [00:00<00:00,  2.32it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.32it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]
+wandb: - 0.012 MB of 0.012 MB uploadedwandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:      acc ▁▁▁▁▁▁▁▁▂▁▂▂▂▃▃▃▄▄▄▃▃▅▅▆▅▅▂▄▆▅▆▇▄▇▇█▅▃▇▇
+wandb:    epoch ▁▂▃▃▄▅▆▆▇█
+wandb:     loss █████▇▆▅▆▇▆▃▃▄▄▄▆▃▄▃▃▄▆▆▂▆▂▄▂▆▂▁▁▆▃▁▆▂▁▂
+wandb:       lr ▁▂▄▅▇█████
+wandb:  val_acc ▁▂▄▅▆▆▇███
+wandb: val_loss █▆▄▃▃▂▂▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.01923
+wandb:    epoch 10
+wandb:     loss 4.07488
+wandb:       lr 0.001
+wandb:  val_acc 0.2792
+wandb: val_loss 3.24158
+wandb: 
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/4s7w2scz
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_180926-4s7w2scz/logs
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_183827-96yo4cwe
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/96yo4cwe
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 2910244
+0it [00:00, ?it/s]1it [00:01,  1.56s/it]2it [00:01,  1.30it/s]3it [00:02,  1.81it/s]4it [00:02,  2.18it/s]5it [00:02,  2.68it/s]6it [00:02,  3.08it/s]7it [00:03,  3.28it/s]8it [00:03,  3.36it/s]9it [00:03,  3.74it/s]10it [00:03,  3.90it/s]10it [00:03,  2.62it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.31it/s] 50%|█████     | 2/4 [00:00<00:00,  2.32it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.32it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]100%|██████████| 4/4 [00:01<00:00,  2.31it/s]
+0it [00:00, ?it/s]1it [00:01,  1.09s/it]2it [00:01,  1.78it/s]3it [00:01,  2.56it/s]4it [00:01,  3.15it/s]5it [00:01,  3.63it/s]6it [00:02,  4.08it/s]7it [00:02,  4.43it/s]8it [00:02,  4.65it/s]9it [00:02,  4.72it/s]10it [00:02,  4.80it/s]10it [00:02,  3.51it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:00<00:01,  2.33it/s] 50%|█████     | 2/4 [00:00<00:00,  2.32it/s] 75%|███████▌  | 3/4 [00:01<00:00,  2.32it/s]100%|██████████| 4/4 [00:01<00:00,  2.32it/s]100%|██████████| 4/4 [00:01<00:00,  2.32it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+0it [00:00, ?it/s]1it [00:01,  1.10s/it]2it [00:01,  1.76it/s]3it [00:01,  2.48it/s]4it [00:01,  3.07it/s]5it [00:01,  3.56it/s]6it [00:02,  3.98it/s]7it [00:02,  4.22it/s]8it [00:02,  4.44it/s]9it [00:02,  4.59it/s]10it [00:02,  4.81it/s]10it [00:02,  3.45it/s]
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:01<00:03,  1.08s/it] 50%|█████     | 2/4 [00:02<00:02,  1.35s/it] 75%|███████▌  | 3/4 [00:03<00:01,  1.28s/it]100%|██████████| 4/4 [00:04<00:00,  1.18s/it]100%|██████████| 4/4 [00:04<00:00,  1.21s/it]
+wandb: - 0.012 MB of 0.012 MB uploadedwandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:      acc ▁▁▂▁▁▁▁▂▂▂▃▃▃▃▃▃▅▃▂▅▁▄▆▅▄▇▂▇▅▃▄▃▃▃▂▃█▃▃█
+wandb:    epoch ▁▂▃▃▄▅▆▆▇█
+wandb:     loss █▇▇▇▆▆▆▆▇▅▆▆▆▅▅▄▄▄▄▆▃▆▄▃▅▇▅▂▄▃▁▂▂▆▄▃▁▂▅▂
+wandb:       lr ▁▂▄▅▇█████
+wandb:  val_acc ▁▂▃▄▅▆▆▇██
+wandb: val_loss █▇▅▄▄▃▂▂▁▁
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.08173
+wandb:    epoch 10
+wandb:     loss 3.82053
+wandb:       lr 0.001
+wandb:  val_acc 0.16
+wandb: val_loss 3.72165
+wandb: 
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/96yo4cwe
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_183827-96yo4cwe/logs
+slurmstepd: error: Detected 1 oom_kill event in StepId=164632.batch. Some of the step tasks have been OOM Killed.

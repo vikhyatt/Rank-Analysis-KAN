@@ -1,0 +1,3 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+0it [00:00, ?it/s]

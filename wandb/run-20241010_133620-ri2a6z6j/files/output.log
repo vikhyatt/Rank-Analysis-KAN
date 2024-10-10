@@ -1,0 +1,54 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+10it [00:04,  2.36it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.31it/s]
+10it [00:03,  3.09it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.13it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+10it [00:03,  3.28it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.50it/s]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 269, in fit
+    self._train_one_step(batch)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 108, in _train_one_step
+    out = self.model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 2.93 GiB is free. Including non-PyTorch memory, this process has 90.05 GiB memory in use. Of the allocated memory 85.63 GiB is allocated by PyTorch, and 3.70 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

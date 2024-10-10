@@ -1,0 +1,10 @@
+{"time":"2024-10-10T16:37:44.756786215+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T16:37:44.756842169+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_163744-x5ge45wb/logs/debug-core.log"}
+{"time":"2024-10-10T16:37:44.760250984+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T16:37:44.783146629+02:00","level":"INFO","msg":"created new stream","id":"x5ge45wb"}
+{"time":"2024-10-10T16:37:44.783178166+02:00","level":"INFO","msg":"stream: started","id":"x5ge45wb"}
+{"time":"2024-10-10T16:37:44.783192218+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"x5ge45wb"}}
+{"time":"2024-10-10T16:37:44.78318692+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"x5ge45wb"}}
+{"time":"2024-10-10T16:37:44.783201241+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"x5ge45wb"}}
+{"time":"2024-10-10T16:37:45.102540823+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T16:37:45.104566489+02:00","level":"INFO","msg":"Starting system monitor"}

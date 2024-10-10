@@ -1,0 +1,10 @@
+{"time":"2024-10-10T14:09:54.132043442+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T14:09:54.132105194+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_140954-tzegnve0/logs/debug-core.log"}
+{"time":"2024-10-10T14:09:54.1362617+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T14:09:54.155976481+02:00","level":"INFO","msg":"created new stream","id":"tzegnve0"}
+{"time":"2024-10-10T14:09:54.156008018+02:00","level":"INFO","msg":"stream: started","id":"tzegnve0"}
+{"time":"2024-10-10T14:09:54.156037552+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"tzegnve0"}}
+{"time":"2024-10-10T14:09:54.156035839+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"tzegnve0"}}
+{"time":"2024-10-10T14:09:54.156037121+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"tzegnve0"}}
+{"time":"2024-10-10T14:09:54.654358929+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T14:09:54.655055327+02:00","level":"INFO","msg":"Starting system monitor"}

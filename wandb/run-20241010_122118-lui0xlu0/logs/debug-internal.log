@@ -1,0 +1,12 @@
+{"time":"2024-10-10T12:21:18.316653673+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T12:21:18.316692711+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122118-lui0xlu0/logs/debug-core.log"}
+{"time":"2024-10-10T12:21:18.318009112+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T12:21:18.321648603+02:00","level":"INFO","msg":"created new stream","id":"lui0xlu0"}
+{"time":"2024-10-10T12:21:18.321678087+02:00","level":"INFO","msg":"stream: started","id":"lui0xlu0"}
+{"time":"2024-10-10T12:21:18.32172028+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"lui0xlu0"}}
+{"time":"2024-10-10T12:21:18.321706669+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"lui0xlu0"}}
+{"time":"2024-10-10T12:21:18.321685217+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"lui0xlu0"}}
+{"time":"2024-10-10T12:21:18.600385733+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T12:21:18.601152745+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-10T12:21:22.97022347+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-10T12:21:22.974183268+02:00","level":"INFO","msg":"Stopped system monitor"}

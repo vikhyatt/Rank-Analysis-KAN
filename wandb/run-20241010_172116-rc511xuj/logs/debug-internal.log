@@ -1,0 +1,10 @@
+{"time":"2024-10-10T17:21:16.341687844+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T17:21:16.3417382+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_172116-rc511xuj/logs/debug-core.log"}
+{"time":"2024-10-10T17:21:16.347519833+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T17:21:16.443591488+02:00","level":"INFO","msg":"created new stream","id":"rc511xuj"}
+{"time":"2024-10-10T17:21:16.443634672+02:00","level":"INFO","msg":"stream: started","id":"rc511xuj"}
+{"time":"2024-10-10T17:21:16.443661232+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"rc511xuj"}}
+{"time":"2024-10-10T17:21:16.443662995+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"rc511xuj"}}
+{"time":"2024-10-10T17:21:16.443659369+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"rc511xuj"}}
+{"time":"2024-10-10T17:21:16.755499563+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T17:21:16.756213012+02:00","level":"INFO","msg":"Starting system monitor"}

@@ -1,0 +1,18 @@
+{"time":"2024-10-10T12:22:42.799584496+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T12:22:42.799626879+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122242-gwas0ydr/logs/debug-core.log"}
+{"time":"2024-10-10T12:22:42.80082935+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T12:22:42.803063068+02:00","level":"INFO","msg":"created new stream","id":"gwas0ydr"}
+{"time":"2024-10-10T12:22:42.803081786+02:00","level":"INFO","msg":"stream: started","id":"gwas0ydr"}
+{"time":"2024-10-10T12:22:42.803085291+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:22:42.803093473+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:22:42.803093253+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:22:43.036555499+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T12:22:43.038252476+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-10T12:59:04.551676747+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-10T12:59:04.553851809+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-10T12:59:07.3002918+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-10T12:59:08.608503493+02:00","level":"INFO","msg":"stream: closing","id":"gwas0ydr"}
+{"time":"2024-10-10T12:59:08.608526327+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:59:08.608547328+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:59:08.608551955+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"gwas0ydr"}}
+{"time":"2024-10-10T12:59:08.637320172+02:00","level":"INFO","msg":"stream: closed","id":"gwas0ydr"}

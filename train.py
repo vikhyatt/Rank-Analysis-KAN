@@ -152,9 +152,9 @@ class Trainer(object):
         def hook_fn(module, input, output):
             activations[module] = output
 
-        clone_model = copy.deepcopy(self.model)
-        clone_model = clone_model.to(torch.device('cpu'))
-        
+        #clone_model = copy.deepcopy(self.model)
+        #clone_model = clone_model.to(torch.device('cpu'))
+        clone_model = self.model
         num_layers = len(clone_model.mixer_layers)
         handles = []
         for layer_id in range(num_layers):
@@ -165,12 +165,12 @@ class Trainer(object):
             handles.append([handle1,handle2, handle3, handle4 ])
 
         act_per_batch = []
-        torch.set_num_threads(self.num_workers)
+        #torch.set_num_threads(self.num_workers)
         for i, batch in tqdm(enumerate(test_dl)):
             if i == 10:
                 break
             img, label = batch
-            #img, label = img.to(self.device), label.to(self.device)
+            img, label = img.to(self.device), label.to(self.device)
             
             out = clone_model(img)
             if i <= 10:

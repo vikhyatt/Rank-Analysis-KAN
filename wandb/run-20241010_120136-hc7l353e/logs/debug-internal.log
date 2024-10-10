@@ -1,0 +1,10 @@
+{"time":"2024-10-10T12:01:36.830015313+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T12:01:36.830053791+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_120136-hc7l353e/logs/debug-core.log"}
+{"time":"2024-10-10T12:01:36.831357071+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T12:01:36.836557076+02:00","level":"INFO","msg":"created new stream","id":"hc7l353e"}
+{"time":"2024-10-10T12:01:36.836580981+02:00","level":"INFO","msg":"stream: started","id":"hc7l353e"}
+{"time":"2024-10-10T12:01:36.836595363+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"hc7l353e"}}
+{"time":"2024-10-10T12:01:36.836588242+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"hc7l353e"}}
+{"time":"2024-10-10T12:01:36.836592789+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"hc7l353e"}}
+{"time":"2024-10-10T12:01:37.088087755+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T12:01:37.089123177+02:00","level":"INFO","msg":"Starting system monitor"}

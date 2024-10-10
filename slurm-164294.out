@@ -1,0 +1,372 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122043-pwoynh7x
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/pwoynh7x
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+0it [00:00, ?it/s]1it [00:02,  2.63s/it]1it [00:02,  2.88s/it]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: - 0.015 MB of 0.015 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/pwoynh7x
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_122043-pwoynh7x/logs
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: - Waiting for wandb.init()...wandb: \ Waiting for wandb.init()...wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122055-d3as28sv
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/d3as28sv
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+0it [00:00, ?it/s]1it [00:02,  2.44s/it]1it [00:02,  2.51s/it]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: - 0.015 MB of 0.015 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/d3as28sv
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_122055-d3as28sv/logs
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122107-8seh8v57
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/8seh8v57
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: uniform
+Number of Learnable Parameters: 8688676
+0it [00:00, ?it/s]1it [00:02,  2.30s/it]1it [00:02,  2.36s/it]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: - 0.015 MB of 0.015 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/8seh8v57
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241010_122107-8seh8v57/logs
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_122118-lui0xlu0
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/lui0xlu0
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: xavier
+Number of Learnable Parameters: 8688676
+0it [00:00, ?it/s]1it [00:02,  2.42s/it]1it [00:02,  2.49s/it]
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 83, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 266, in fit
+    self.compute_svd(epoch, test_dl, init = init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 175, in compute_svd
+    out = clone_model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 406, in forward
+    out = self.mixer_layers(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/container.py", line 219, in forward
+    input = module(input)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 421, in forward
+    out = self.kan2(out)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 475, in forward
+    out = self.do2(self.fc2(out))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1603, in _call_impl
+    result = forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 240, in forward
+    spline_basis = self.rbf(self.layernorm(x))
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 161, in forward
+    return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.06 GiB. GPU 0 has a total capacity of 93.02 GiB of which 1.10 GiB is free. Including non-PyTorch memory, this process has 91.90 GiB memory in use. Of the allocated memory 90.09 GiB is allocated by PyTorch, and 1.16 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+slurmstepd: error: *** JOB 164294 ON kh038 CANCELLED AT 2024-10-10T12:21:23 ***

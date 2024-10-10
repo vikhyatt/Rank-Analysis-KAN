@@ -1,0 +1,19 @@
+{"time":"2024-10-10T18:09:26.799829279+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T18:09:26.799889489+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_180926-4s7w2scz/logs/debug-core.log"}
+{"time":"2024-10-10T18:09:26.80144344+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T18:09:26.813719387+02:00","level":"INFO","msg":"created new stream","id":"4s7w2scz"}
+{"time":"2024-10-10T18:09:26.81374761+02:00","level":"INFO","msg":"stream: started","id":"4s7w2scz"}
+{"time":"2024-10-10T18:09:26.813757324+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:09:26.813765657+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:09:26.813769773+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:09:27.116082026+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T18:09:27.145365569+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-10T18:13:12.786491174+02:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/4s7w2scz/file_stream"}
+{"time":"2024-10-10T18:37:46.464555354+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-10T18:37:46.475125307+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-10T18:37:47.808536791+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-10T18:37:49.005731098+02:00","level":"INFO","msg":"stream: closing","id":"4s7w2scz"}
+{"time":"2024-10-10T18:37:49.005753131+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:37:49.005767924+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:37:49.005780442+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"4s7w2scz"}}
+{"time":"2024-10-10T18:37:49.035414044+02:00","level":"INFO","msg":"stream: closed","id":"4s7w2scz"}
