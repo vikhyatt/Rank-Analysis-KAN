@@ -1,2 +1,2 @@
-# Rank-Analysis-KAN
-This is a repository to compute SVDs for KANs
+# KAN-Mixer
+The working version of KAN-mixer for FASTKAN. 

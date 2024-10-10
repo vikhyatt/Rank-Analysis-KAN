@@ -1,0 +1,15 @@
+LICENSE
+README.md
+setup.py
+efficient_kan/__init__.py
+efficient_kan/kan.py
+fastkan/__init__.py
+fastkan/fastkan.py
+fastkan.egg-info/PKG-INFO
+fastkan.egg-info/SOURCES.txt
+fastkan.egg-info/dependency_links.txt
+fastkan.egg-info/requires.txt
+fastkan.egg-info/top_level.txt
+kat/__init__.py
+kat/kat.py
+tests/test_attention.py

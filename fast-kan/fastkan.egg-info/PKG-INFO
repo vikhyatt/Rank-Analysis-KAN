@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: fastkan
+Version: 0.1.4
+Summary: Lightning Fast Implementation of Kolmogorov-Arnold Networks
+Home-page: https://github.com/ZiyaoLi/fast-kan
+Author: Li, Ziyao
+Author-email: leeeezy@pku.edu.cn
+License: Apache License, Version 2.0
+Description: UNKNOWN
+Platform: UNKNOWN
+License-File: LICENSE
