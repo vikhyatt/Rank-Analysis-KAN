@@ -39,7 +39,7 @@ class SplineLinear(nn.Linear):
         elif self.init == 'beta':
             beta_dist = dist.beta.Beta(concentration1 = self.init_scale[0], concentration0 = self.init_scale[1])
             with torch.no_grad():
-                self.weight.copy_(beta_dist.sample(self.weight.shape))
+                self.weight.copy_(beta_dist.sample(self.weight.shape) - (self.init_scale[0]/(self.init_scale[0]+self.init_scale[1])))
         elif self.init == 'gamma':
             gamma_dist = dist.gamma.Gamma(concentration = self.init_scale[0], rate = self.init_scale[1])
             with torch.no_grad():
