@@ -43,11 +43,11 @@ class SplineLinear(nn.Linear):
         elif self.init == 'gamma':
             gamma_dist = dist.gamma.Gamma(concentration = self.init_scale[0], rate = self.init_scale[1])
             with torch.no_grad():
-                self.weight.copy_(gamma_dist.sample(self.weight.shape))
+                self.weight.copy_(gamma_dist.sample(self.weight.shape) - (self.init_scale[0]/self.init_scale[1]))
         elif self.init == 'exponential':
             expo_dist = dist.exponential.Exponential(rate = self.init_scale[0])
             with torch.no_grad():
-                self.weight.copy_(expo_dist.sample(self.weight.shape))
+                self.weight.copy_(expo_dist.sample(self.weight.shape) - 1/self.init_scale[0])
             
         else:
             raise ValueError('Unsupported Initialization entered')
