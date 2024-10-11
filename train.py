@@ -152,91 +152,50 @@ class Trainer(object):
         def hook_fn(module, input, output):
             activations[module] = output
 
-        #clone_model = copy.deepcopy(self.model)
-        #clone_model = clone_model.to(torch.device('cpu'))
-        if torch.cuda.device_count() > 1:
-            clone_model = self.model
-            num_layers = len(clone_model.module.mixer_layers)
-            handles = []
-            for layer_id in range(num_layers):
-                handle1 = clone_model.module.mixer_layers[layer_id].kan1.fc1.register_forward_hook(hook_fn)
-                handle2 = clone_model.module.mixer_layers[layer_id].kan1.fc2.register_forward_hook(hook_fn)
-                handle3 = clone_model.module.mixer_layers[layer_id].kan2.fc1.register_forward_hook(hook_fn)
-                handle4 = clone_model.module.mixer_layers[layer_id].kan2.fc2.register_forward_hook(hook_fn)
-                handles.append([handle1,handle2, handle3, handle4 ])
+        clone_model = copy.deepcopy(self.model)
+        clone_model = clone_model.to(torch.device('cpu'))
+        
+        #clone_model = self.model
+        num_layers = len(clone_model.mixer_layers)
+        handles = []
+        for layer_id in range(num_layers):
+            handle1 = clone_model.mixer_layers[layer_id].kan1.fc1.register_forward_hook(hook_fn)
+            handle2 = clone_model.mixer_layers[layer_id].kan1.fc2.register_forward_hook(hook_fn)
+            handle3 = clone_model.mixer_layers[layer_id].kan2.fc1.register_forward_hook(hook_fn)
+            handle4 = clone_model.mixer_layers[layer_id].kan2.fc2.register_forward_hook(hook_fn)
+            handles.append([handle1,handle2, handle3, handle4 ])
     
-            act_per_batch = []
-            #torch.set_num_threads(self.num_workers)
-            for i, batch in tqdm(enumerate(test_dl)):
-                if i == 10:
-                    break
-                img, label = batch
-                img, label = img.to(self.device), label.to(self.device)
-                
-                out = clone_model(img)
-                if i <= 10:
-                    acts = []
-                    for layer_id in range(num_layers):
-                        act1 = activations[clone_model.module.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
-                        act2 = activations[clone_model.module.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
-                        act3 = activations[clone_model.module.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
-                        act4 = activations[clone_model.module.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
-                        acts.append([act1, act2, act3, act4])
-                
-                    act_per_batch.append(acts)
+        act_per_batch = []
+        #torch.set_num_threads(self.num_workers)
+        for i, batch in tqdm(enumerate(test_dl)):
+            img, label = batch
+            #img, label = img.to(self.device), label.to(self.device)
+            if i*len(img) > 2560:
+                break
+
+            out = clone_model(img)
+            if i <= 10:
+                acts = []
+                for layer_id in range(num_layers):
+                    act1 = activations[clone_model.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
+                    act2 = activations[clone_model.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
+                    act3 = activations[clone_model.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
+                    act4 = activations[clone_model.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
+                    acts.append([act1, act2, act3, act4])
             
-                else:
-                    for layer_id in range(num_layers):
-                        act1 = activations[clone_model.module.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
-                        act2 = activations[clone_model.module.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
-                        act3 = activations[clone_model.module.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
-                        act4 = activations[clone_model.module.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
-                        act_per_batch[0][layer_id][0] = np.concatenate((act_per_batch[0][layer_id][0], act1), axis=0)
-                        act_per_batch[0][layer_id][1] = np.concatenate((act_per_batch[0][layer_id][1], act2), axis=0)
-                        act_per_batch[0][layer_id][2] = np.concatenate((act_per_batch[0][layer_id][2], act3), axis=0)
-                        act_per_batch[0][layer_id][3] = np.concatenate((act_per_batch[0][layer_id][3], act4), axis=0)
-        else:
-            clone_model = self.model
-            num_layers = len(clone_model.mixer_layers)
-            handles = []
-            for layer_id in range(num_layers):
-                handle1 = clone_model.mixer_layers[layer_id].kan1.fc1.register_forward_hook(hook_fn)
-                handle2 = clone_model.mixer_layers[layer_id].kan1.fc2.register_forward_hook(hook_fn)
-                handle3 = clone_model.mixer_layers[layer_id].kan2.fc1.register_forward_hook(hook_fn)
-                handle4 = clone_model.mixer_layers[layer_id].kan2.fc2.register_forward_hook(hook_fn)
-                handles.append([handle1,handle2, handle3, handle4 ])
-    
-            act_per_batch = []
-            #torch.set_num_threads(self.num_workers)
-            for i, batch in tqdm(enumerate(test_dl)):
-                if i == 10:
-                    break
-                img, label = batch
-                img, label = img.to(self.device), label.to(self.device)
-                
-                out = clone_model(img)
-                if i <= 10:
-                    acts = []
-                    for layer_id in range(num_layers):
-                        act1 = activations[clone_model.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
-                        act2 = activations[clone_model.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
-                        act3 = activations[clone_model.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
-                        act4 = activations[clone_model.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
-                        acts.append([act1, act2, act3, act4])
-                
-                    act_per_batch.append(acts)
+                act_per_batch.append(acts)
+        
+            else:
+                for layer_id in range(num_layers):
+                    act1 = activations[clone_model.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
+                    act2 = activations[clone_model.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
+                    act3 = activations[clone_model.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
+                    act4 = activations[clone_model.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
+                    act_per_batch[0][layer_id][0] = np.concatenate((act_per_batch[0][layer_id][0], act1), axis=0)
+                    act_per_batch[0][layer_id][1] = np.concatenate((act_per_batch[0][layer_id][1], act2), axis=0)
+                    act_per_batch[0][layer_id][2] = np.concatenate((act_per_batch[0][layer_id][2], act3), axis=0)
+                    act_per_batch[0][layer_id][3] = np.concatenate((act_per_batch[0][layer_id][3], act4), axis=0)
             
-                else:
-                    for layer_id in range(num_layers):
-                        act1 = activations[clone_model.mixer_layers[layer_id].kan1.fc1].cpu().detach().numpy()
-                        act2 = activations[clone_model.mixer_layers[layer_id].kan1.fc2].cpu().detach().numpy()
-                        act3 = activations[clone_model.mixer_layers[layer_id].kan2.fc1].cpu().detach().numpy()
-                        act4 = activations[clone_model.mixer_layers[layer_id].kan2.fc2].cpu().detach().numpy()
-                        act_per_batch[0][layer_id][0] = np.concatenate((act_per_batch[0][layer_id][0], act1), axis=0)
-                        act_per_batch[0][layer_id][1] = np.concatenate((act_per_batch[0][layer_id][1], act2), axis=0)
-                        act_per_batch[0][layer_id][2] = np.concatenate((act_per_batch[0][layer_id][2], act3), axis=0)
-                        act_per_batch[0][layer_id][3] = np.concatenate((act_per_batch[0][layer_id][3], act4), axis=0)
-                
         final_act = []
         for layer_id in tqdm(range(num_layers)):
             final_act.append([])
