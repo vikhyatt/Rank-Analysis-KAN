@@ -18,6 +18,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 from torch.nn import Parameter
+import torch.distributions as dist
 from torch.autograd import Variable
 
 from typing import *
@@ -35,6 +36,19 @@ class SplineLinear(nn.Linear):
             nn.init.uniform_(self.weight, a= -2*self.init_scale[0], b= 2*self.init_scale[0])
         elif self.init == 'xavier':
             nn.init.xavier_uniform_(self.weight, gain=10*self.init_scale[0])
+        elif self.init == 'beta':
+            beta_dist = dist.beta.Beta(concentration1 = self.init_scale[0], concentration0 = self.init_scale[1])
+            with torch.no_grad():
+                self.weight.copy_(beta_dist.sample(self.weight.shape))
+        elif self.init == 'gamma':
+            gamma_dist = dist.gamma.Gamma(concentration = self.init_scale[0], rate = self.init_scale[1])
+            with torch.no_grad():
+                self.weight.copy_(gamma_dist.sample(self.weight.shape))
+        elif self.init == 'exponential':
+            expo_dist = dist.exponential.Exponential(rate = self.init_scale[0])
+            with torch.no_grad():
+                self.weight.copy_(expo_dist.sample(self.weight.shape))
+            
         else:
             raise ValueError('Unsupported Initialization entered')
 
