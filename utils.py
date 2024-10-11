@@ -122,7 +122,8 @@ def get_model(args):
         )
     else:
         raise ValueError(f"No such model: {args.model}")
-        
+    if torch.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
     return model.to(args.device)
 
 def rand_bbox(size, lam):
