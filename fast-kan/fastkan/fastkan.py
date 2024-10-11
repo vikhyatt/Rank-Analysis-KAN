@@ -23,18 +23,18 @@ from torch.autograd import Variable
 from typing import *
 
 class SplineLinear(nn.Linear):
-    def __init__(self, in_features: int, out_features: int, init_scale: float = 0.1,init = 'default', **kw) -> None:
+    def __init__(self, in_features: int, out_features: int, init_scale = [0.1],init = 'default', **kw) -> None:
         self.init_scale = init_scale
         self.init = init
         super().__init__(in_features, out_features, bias=False, **kw)
 
     def reset_parameters(self) -> None:
         if self.init == 'default':
-            nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+            nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale[0])
         elif self.init == 'uniform':
-            nn.init.uniform_(self.weight, a= -2*self.init_scale, b= 2*self.init_scale)
+            nn.init.uniform_(self.weight, a= -2*self.init_scale[0], b= 2*self.init_scale[0])
         elif self.init == 'xavier':
-            nn.init.xavier_uniform_(self.weight, gain=10*self.init_scale)
+            nn.init.xavier_uniform_(self.weight, gain=10*self.init_scale[0])
         else:
             raise ValueError('Unsupported Initialization entered')
 
