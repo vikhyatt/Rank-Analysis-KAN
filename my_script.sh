@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:1        # Request 1 GPU
 #SBATCH --mem=80G           # Memory request for the job
 #SBATCH --partition=h100     # Specify the partition
-#SBATCH --time=4:00:00     # Set a time limit
+#SBATCH --time=2:00:00     # Set a time limit
 
 # Activate your virtual environment
 source ../venvs/kan/bin/activate

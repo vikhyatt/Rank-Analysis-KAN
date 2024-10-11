@@ -1,0 +1,10 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: False, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8688676
+10it [00:04,  2.26it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.30it/s]
+10it [00:03,  2.87it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.37it/s]
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+10it [00:03,  2.91it/s]
+100%|██████████| 4/4 [00:01<00:00,  2.28it/s]

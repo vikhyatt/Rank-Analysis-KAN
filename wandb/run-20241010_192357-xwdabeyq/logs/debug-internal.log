@@ -1,0 +1,10 @@
+{"time":"2024-10-10T19:23:57.842445034+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-10T19:23:57.842506446+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241010_192357-xwdabeyq/logs/debug-core.log"}
+{"time":"2024-10-10T19:23:57.843670343+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-10T19:23:57.901258506+02:00","level":"INFO","msg":"created new stream","id":"xwdabeyq"}
+{"time":"2024-10-10T19:23:57.901295922+02:00","level":"INFO","msg":"stream: started","id":"xwdabeyq"}
+{"time":"2024-10-10T19:23:57.901306699+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"xwdabeyq"}}
+{"time":"2024-10-10T19:23:57.901303424+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"xwdabeyq"}}
+{"time":"2024-10-10T19:23:57.901323624+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"xwdabeyq"}}
+{"time":"2024-10-10T19:23:58.233162484+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-10T19:23:58.238333594+02:00","level":"INFO","msg":"Starting system monitor"}
