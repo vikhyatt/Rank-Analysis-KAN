@@ -204,6 +204,7 @@ class FastKANLayer(nn.Module):
         use_same_weight = False,
         use_cpd = False,
         use_softmax_prod = False,
+        layer_norm_dim = None,
         init = 'default',
     ) -> None:
         super().__init__()
@@ -214,9 +215,13 @@ class FastKANLayer(nn.Module):
         self.use_poly = use_poly
         self.use_softmax_prod = use_softmax_prod
         self.layernorm = None
+        self.layer_norm_dim = layer_norm_dim
         if use_layernorm:
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
-            self.layernorm = nn.LayerNorm(input_dim)
+            if layer_norm_dim is not None:
+                self.layernorm = nn.LayerNorm(layer_norm_dim)
+            else:
+                self.layernorm = nn.LayerNorm(input_dim)
 
         if use_poly:
             self.rbf = PolyBasisFunction(degree_poly)
@@ -251,7 +256,10 @@ class FastKANLayer(nn.Module):
 
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
-            spline_basis = self.rbf(self.layernorm(x))
+            if self.layer_norm_dim != self.input_dim:
+                spline_basis = self.rbf(self.layernorm(x).permute(0,2,1))
+            else:
+                spline_basis = self.rbf(self.layernorm(x))
         else:
             spline_basis = self.rbf(x)
 
