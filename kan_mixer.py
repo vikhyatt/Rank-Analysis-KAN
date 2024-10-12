@@ -329,11 +329,9 @@ class KANMixer(nn.Module):
         self.is_cls_token = is_cls_token
 
         print(f"Polynomial Basis: {use_poly}, Degree of Polynomial: {degree_poly}, Using Same Function: {use_same_fn}, Using same weights: {use_same_weight}, Positional Embeddings: {use_pe}, CPD Decomposition: {use_cpd}, Softmax Prod: {use_softmax_prod}, Init: {init}")
-
-        self.patch_emb = nn.Sequential(
-            Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_size, p2 = patch_size),
-            KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1])
-        )
+        self.rearr = Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_size, p2 = patch_size),
+        self.patch_emb = KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1])
+        
 
         self.use_pe = use_pe
         if use_pe:
@@ -382,7 +380,8 @@ class KANMixer(nn.Module):
 
 
     def forward(self, x):
-        out = self.patch_emb(x)
+        x = self.rearr(x)
+        out = self.patch_emb(x, use_layernorm = False)
 
         #Use Positional Embeddings
         if self.use_pe:
@@ -406,7 +405,7 @@ class KANMixer(nn.Module):
         out = self.mixer_layers(out)
         out = self.ln(out)
         out = out[:, 0] if self.is_cls_token else out.mean(dim=1)
-        out = self.clf(out)
+        out = self.clf(out, use_layernorm = False)
         return out
 
 
