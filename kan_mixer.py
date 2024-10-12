@@ -448,7 +448,7 @@ class KAN1(nn.Module):
         #out = self.do2(out)
 
         initial_x = x.clone()
-        x = self.ln(x).permute(0,2,1)
+        x = self.ln(x).permute(0,2,1).contiguous()
         x = self.fc1(x, use_layernorm = False).permute(0,2,1)
         out = self.do1(x).permute(0,2,1)
         out = self.fc2(out, use_layernorm = False).permute(0,2,1)
@@ -468,10 +468,10 @@ class KAN2(nn.Module):
         self.act = F.gelu if not off_act else lambda x:x
     def forward(self, x):
         
-        #out = self.do1(self.act(self.fc1(self.ln(x))))
+        #out = self.do1(self.act(self.fc1(self.ln(x).contiguous())))
         #out = self.do2(self.fc2(out))
 
-        out = self.do1(self.fc1(self.ln(x), use_layernorm = False))
+        out = self.do1(self.fc1(self.ln(x).contiguous(), use_layernorm = False))
         out = self.do2(self.fc2(out, use_layernorm = False))
         return out+ self.skip_param*x
 
