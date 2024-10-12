@@ -448,11 +448,10 @@ class KAN1(nn.Module):
         #out = self.do2(out)
 
         initial_x = x.clone()
-        x = self.ln(x)
-        x = x.permute(0,2,1)
+        x = self.ln(x).permute(0,2,1)
         x = self.fc1(x, use_layernorm = False).permute(0,2,1)
         out = self.do1(x).permute(0,2,1)
-        out = self.fc2(out).permute(0,2,1)
+        out = self.fc2(out, use_layernorm = False).permute(0,2,1)
         out = self.do2(out)
         
         return out+ self.skip_param*initial_x
@@ -472,8 +471,8 @@ class KAN2(nn.Module):
         #out = self.do1(self.act(self.fc1(self.ln(x))))
         #out = self.do2(self.fc2(out))
 
-        out = self.do1(self.fc1(x))
-        out = self.do2(self.fc2(out))
+        out = self.do1(self.fc1(self.ln(x), use_layernorm = False))
+        out = self.do2(self.fc2(out, use_layernorm = False))
         return out+ self.skip_param*x
 
 
