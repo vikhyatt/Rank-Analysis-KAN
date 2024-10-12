@@ -153,6 +153,8 @@ class Trainer(object):
             activations[module] = output
 
         clone_model = copy.deepcopy(self.model)
+        if torch.cuda.device_count() > 1:
+            clone_model = clone_model.module
         clone_model = clone_model.to(torch.device('cpu'))
         
         #clone_model = self.model
