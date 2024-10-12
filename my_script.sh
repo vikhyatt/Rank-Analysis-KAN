@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=12
 #SBATCH --gres=gpu:2        # Request 1 GPU
-#SBATCH --mem=80G           # Memory request for the job
+#SBATCH --mem=120G           # Memory request for the job
 #SBATCH --time=4:00:00     # Set a time limit
 
 # Activate your virtual environment
