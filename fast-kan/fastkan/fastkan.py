@@ -267,7 +267,7 @@ class FastKANLayer(nn.Module):
             if self.use_softmax_prod:
                 ret = ret * F.softmax(ret, dim = -1)
         else:
-            ret = self.spline_linear(spline_basis.view(*spline_basis.shape[:-2], -1))
+            ret = self.spline_linear(spline_basis.reshape(*spline_basis.shape[:-2], -1))
             
         if self.use_base_update:
             base = self.base_linear(self.base_activation(x))
