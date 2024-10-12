@@ -448,8 +448,9 @@ class KAN1(nn.Module):
         #out = self.do2(out)
 
         initial_x = x.clone()
+        x = self.ln(x)
         x = x.permute(0,2,1)
-        x = self.fc1(x).permute(0,2,1)
+        x = self.fc1(x, use_layernorm = False).permute(0,2,1)
         out = self.do1(x).permute(0,2,1)
         out = self.fc2(out).permute(0,2,1)
         out = self.do2(out)
