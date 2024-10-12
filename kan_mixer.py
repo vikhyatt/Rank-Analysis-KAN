@@ -429,7 +429,7 @@ class KAN1(nn.Module):
         self.skip_param = skip_param
         
         #self.fc1 = nn.Conv1d(num_patches, hidden_s, kernel_size=1)
-        self.fc1 = KANLinear(num_patches, hidden_s, layer_norm_dim = hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1])
+        self.fc1 = KANLinear(num_patches, hidden_s,use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1])
         self.do1 = nn.Dropout(p=drop_p)
         #self.fc2 = nn.Conv1d(hidden_s, num_patches, kernel_size=1)
         self.fc2 = KANLinear(hidden_s, num_patches, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1])
@@ -448,8 +448,8 @@ class KAN1(nn.Module):
         #out = self.do2(out)
 
         initial_x = x.clone()
-        #x = x.permute(0,2,1)
-        x = self.fc1(x).permute(0,2,1)
+        x = self.ln(x).permute(0,2,1).contiguous()
+        x = self.fc1(x, use_layernorm = False).permute(0,2,1)
         out = self.do1(x).permute(0,2,1)
         out = self.fc2(out, use_layernorm = False).permute(0,2,1)
         out = self.do2(out)
