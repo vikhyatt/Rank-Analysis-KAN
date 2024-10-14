@@ -48,6 +48,8 @@ def get_model(args):
             init = args.init,
             spline_weight_init_scale = args.init_scale,
             grid = args.grid,
+            grid_type = args.grid_type,
+            denominator = args.denominator,
         )
 
     elif args.model=='kat_mixer':
