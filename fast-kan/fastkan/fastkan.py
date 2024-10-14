@@ -161,13 +161,19 @@ class RadialBasisFunction(nn.Module):
         grid_min: float = -2.,
         grid_max: float = 2.,
         num_grids: int = 8,
+        grid_type: str = 'uniform',
         denominator: float = None,  # larger denominators lead to smoother basis
     ):
         super().__init__()
         self.grid_min = grid_min
         self.grid_max = grid_max
         self.num_grids = num_grids
-        grid = torch.linspace(grid_min, grid_max, num_grids)
+        if grid_type == 'uniform':
+            grid = torch.linspace(grid_min, grid_max, num_grids)
+        elif grid_type == 'chebyshev':
+            nodes = torch.cos((2 * torch.arange(1, num_grids + 1) - 1) * math.pi / (2 * num_grids))
+            grid = 0.5 * (grid_max - grid_min) * nodes + 0.5 * (grid_max + grid_min)
+            
         self.grid = torch.nn.Parameter(grid, requires_grad=False)
         self.denominator = denominator or (grid_max - grid_min) / (num_grids - 1)
 
@@ -205,6 +211,8 @@ class FastKANLayer(nn.Module):
         use_cpd = False,
         use_softmax_prod = False,
         init = 'default',
+        grid_type = 'uniform',
+        denominator = None,
     ) -> None:
         super().__init__()
         self.input_dim = input_dim
@@ -231,7 +239,7 @@ class FastKANLayer(nn.Module):
                 
 
         else:
-            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids)
+            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             if not use_same_fn:
                 self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init)
             else:
