@@ -23,6 +23,8 @@ parser.add_argument('--init', default='default', choices=['default', 'uniform', 
 parser.add_argument('--init-scale', nargs='+', type=float, default=[0.1])
 parser.add_argument('--grid-min', type=float, default=-2)
 parser.add_argument('--grid-max', type=float, default=2)
+parser.add_argument('--denominator', type=float, default=0)
+parser.add_argument('--grid-type', default='uniform', choices=['chebyshev', 'uniform'])
 # parser.add_argument('--precision', type=int, default=16)
 
 parser.add_argument('--patch-size', type=int, default=4)
