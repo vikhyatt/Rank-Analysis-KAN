@@ -175,7 +175,10 @@ class RadialBasisFunction(nn.Module):
             grid = 0.5 * (grid_max - grid_min) * nodes + 0.5 * (grid_max + grid_min)
             
         self.grid = torch.nn.Parameter(grid, requires_grad=False)
-        self.denominator = denominator or (grid_max - grid_min) / (num_grids - 1)
+        if denominator == 0:
+            self.denominator = (grid_max - grid_min) / (num_grids - 1)
+        else:
+            self.denominator = denominator
 
     def forward(self, x):
         return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
