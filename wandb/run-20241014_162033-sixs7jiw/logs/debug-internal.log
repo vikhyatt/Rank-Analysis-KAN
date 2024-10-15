@@ -1,0 +1,18 @@
+{"time":"2024-10-14T16:20:56.595555148+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-14T16:20:56.595609386+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241014_162033-sixs7jiw/logs/debug-core.log"}
+{"time":"2024-10-14T16:20:56.597034974+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-14T16:20:56.939620884+02:00","level":"INFO","msg":"created new stream","id":"sixs7jiw"}
+{"time":"2024-10-14T16:20:56.939687813+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T16:20:56.939744243+02:00","level":"INFO","msg":"stream: started","id":"sixs7jiw"}
+{"time":"2024-10-14T16:20:56.939766543+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T16:20:56.939816373+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T16:20:57.218612738+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-14T16:20:57.219316435+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-14T17:32:51.905938657+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-14T17:32:51.907212798+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-14T17:32:52.749510162+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-14T17:32:53.982656134+02:00","level":"INFO","msg":"stream: closing","id":"sixs7jiw"}
+{"time":"2024-10-14T17:32:53.982668122+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T17:32:53.982694424+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T17:32:53.9826929+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"sixs7jiw"}}
+{"time":"2024-10-14T17:32:54.012349928+02:00","level":"INFO","msg":"stream: closed","id":"sixs7jiw"}
