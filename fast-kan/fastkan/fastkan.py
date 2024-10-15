@@ -48,6 +48,8 @@ class SplineLinear(nn.Linear):
             expo_dist = dist.exponential.Exponential(rate = self.init_scale[0])
             with torch.no_grad():
                 self.weight.copy_(expo_dist.sample(self.weight.shape) - 1/self.init_scale[0])
+        elif self.init == 'zero':
+            torch.nn.init.zeros_(self.weight)
             
         else:
             raise ValueError('Unsupported Initialization entered')
