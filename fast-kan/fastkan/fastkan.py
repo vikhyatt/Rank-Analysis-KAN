@@ -181,6 +181,7 @@ class RadialBasisFunction(nn.Module):
             self.denominator = (grid_max - grid_min) / (num_grids - 1)
         elif denominator < 0:
             self.denominator = abs(denominator)*self.grid.clone()
+            self.denominator = torch.clamp(self.denominator, min = 0.75)
             self.denominator = torch.nn.Parameter(self.denominator, requires_grad=False)
         else:
             self.denominator = denominator
