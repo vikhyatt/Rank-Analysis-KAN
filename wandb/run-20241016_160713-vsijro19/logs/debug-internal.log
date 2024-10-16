@@ -1,0 +1,20 @@
+{"time":"2024-10-16T16:07:13.883129944+02:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-10-16T16:07:13.883190978+02:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241016_160713-vsijro19/logs/debug-core.log"}
+{"time":"2024-10-16T16:07:13.888219057+02:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-16T16:07:13.921597761+02:00","level":"INFO","msg":"created new stream","id":"vsijro19"}
+{"time":"2024-10-16T16:07:13.921647473+02:00","level":"INFO","msg":"stream: started","id":"vsijro19"}
+{"time":"2024-10-16T16:07:13.92168237+02:00","level":"INFO","msg":"handler: started","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T16:07:13.921743811+02:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T16:07:13.921744147+02:00","level":"INFO","msg":"sender: started","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T16:07:14.319575821+02:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-16T16:07:14.345933123+02:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-16T16:39:44.983427355+02:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/vsijro19/file_stream"}
+{"time":"2024-10-16T17:09:09.487586465+02:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/vsijro19/file_stream"}
+{"time":"2024-10-16T17:20:40.021563693+02:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-16T17:20:40.039644437+02:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-16T17:20:41.004130731+02:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-16T17:20:43.033859408+02:00","level":"INFO","msg":"stream: closing","id":"vsijro19"}
+{"time":"2024-10-16T17:20:43.033879778+02:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T17:20:43.033899561+02:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T17:20:43.033903095+02:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"vsijro19"}}
+{"time":"2024-10-16T17:20:43.064380184+02:00","level":"INFO","msg":"stream: closed","id":"vsijro19"}
