@@ -51,6 +51,9 @@ class SplineLinear(nn.Linear):
         elif self.init == 'zero':
             torch.nn.init.zeros_(self.weight)
             
+        elif self.init == 'orthogonal':
+            torch.nn.init.orthogonal_(self.weight)
+            
         else:
             raise ValueError('Unsupported Initialization entered')
 
