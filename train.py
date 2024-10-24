@@ -252,21 +252,21 @@ class Trainer(object):
             self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, T_max=self.epochs - self.checkpoint_epoch , eta_min=self.min_lr)
             
         for epoch in range(self.checkpoint_epoch + 1, self.epochs + 1):
-            if epoch > 10:
-                break
-            if epoch == 1 or epoch == 5 or epoch == 10:
-                PATH = f"../saved_models/{epoch}, {self.model_configs}.pt"
-                prev_PATH = f"../saved_models/{epoch-10}, {self.model_configs}.pt"
-                torch.save({
-                'epoch': epoch,
-                'model_state_dict': self.model.state_dict(),
-                'optimizer_state_dict': self.optimizer.state_dict(),
-                'loss': self.epoch_loss,
-                }, PATH)
-                if os.path.exists(prev_PATH):
-                    os.remove(prev_PATH)
+            #if epoch > 10:
+            #    break
+            #if epoch == 1 or epoch == 5 or epoch == 10:
+            #    PATH = f"../saved_models/{epoch}, {self.model_configs}.pt"
+            #    prev_PATH = f"../saved_models/{epoch-10}, {self.model_configs}.pt"
+            #    torch.save({
+            #    'epoch': epoch,
+            #    'model_state_dict': self.model.state_dict(),
+            #    'optimizer_state_dict': self.optimizer.state_dict(),
+            #    'loss': self.epoch_loss,
+            #    }, PATH)
+            #    if os.path.exists(prev_PATH):
+            #        os.remove(prev_PATH)
 
-                self.compute_svd(epoch, test_dl, init = init)
+             #   self.compute_svd(epoch, test_dl, init = init)
                     
             for batch in train_dl:
                 self._train_one_step(batch)
