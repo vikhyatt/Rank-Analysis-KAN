@@ -38,7 +38,7 @@ def get_model(args):
             degree_poly = 2,
             use_base_update = True,
             base_activation = F.silu,
-            use_same_fn = False,
+            use_same_fn = True,
             use_same_weight = False,
             use_pe = False,
             use_cpd = False,
