@@ -269,7 +269,14 @@ class Trainer(object):
             #        os.remove(prev_PATH)
 
              #   self.compute_svd(epoch, test_dl, init = init)
-                    
+            
+            if self.u_norm and epoch % self.u_epoch == 0:
+                if torch.cuda.device_count() == 1:
+                    self.model.normalize()
+                else:
+                    self.model.module.normalize()
+                print('NORMALIZED')
+                
             for batch in train_dl:
                 self._train_one_step(batch)
             wandb.log({
