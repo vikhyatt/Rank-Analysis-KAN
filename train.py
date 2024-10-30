@@ -296,7 +296,7 @@ class Trainer(object):
                 }, step=self.num_steps
             )
 
-            if epoch % self.u_epoch == 0:
+            if self.u_norm and epoch % self.u_epoch == 0:
                 self.model.normalize()
 
             if epoch % 10 == 0:
