@@ -26,6 +26,8 @@ parser.add_argument('--grid-max', type=float, default=2)
 parser.add_argument('--denominator', type=float, default=0)
 parser.add_argument('--grid-type', default='uniform', choices=['chebyshev', 'uniform'])
 parser.add_argument('--w-norm', type=float, default=0)
+parser.add_argument('--u-norm', type=float, default=0)
+parser.add_argument('--u-epoch', type=int, default=0)
 # parser.add_argument('--precision', type=int, default=16)
 
 parser.add_argument('--patch-size', type=int, default=4)
