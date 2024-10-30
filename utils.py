@@ -50,6 +50,7 @@ def get_model(args):
             grid = args.grid,
             grid_type = args.grid_type,
             denominator = args.denominator,
+            w_norm = args.w_norm, 
         )
 
     elif args.model=='kat_mixer':
