@@ -66,16 +66,18 @@ class tied_SplineLinear(nn.Module):
         self.out_features = out_features
         self.degree = degree
         self.use_same_weight = use_same_weight
+        self.w_norm = w_norm
         #print(f"{degree+1} weights per row in matrix")
         # degree+1 weights per row in matrix
+        
+        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
         
         #self.fc1 = SplineLinear(self.degree + 1, self.out_features, init_scale = init_scale)
         #self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
         if w_norm:  
-            self.weight = weight_norm(Parameter(torch.Tensor(out_features, self.degree + 1)), name = 'weight')
             self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False), name = 'weighted_sum') 
+            self.norm_factor = nn.Parameter(torch.tensor(1.0))
         else:
-            self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
             self.weighted_sum  = nn.Conv1d(in_features, out_features, 1, bias = False)
 
         #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
@@ -121,7 +123,11 @@ class tied_SplineLinear(nn.Module):
             x = self.weighted_sum(x)
         
         #x = torch.einsum('...ji,ij->...i', x, self.weight).contiguous()
-        x = (x * self.weight).sum(dim=-1)
+        if self.w_norm:
+            weight_normed_param = self.norm_factor * self.weight / torch.norm(self.weight)
+            x = (x * self.weight_normed_param).sum(dim=-1)
+        else:
+            x = (x * self.weight).sum(dim=-1)
 
         #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
         #final_weight = torch.cat((self.weight_deg.repeat(self.out_features, 1), self.weight_one), dim = -1)
