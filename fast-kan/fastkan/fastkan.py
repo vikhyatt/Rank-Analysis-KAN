@@ -111,7 +111,7 @@ class tied_SplineLinear(nn.Module):
         nn.init.trunc_normal_(self.weighted_sum.weight, mean=0, std=self.init_scale)
         
     def normalize(self):
-        self.weight = F.normalize(self.weight, p=2, dim=-1)
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
         
     def forward(self, x):
         # degree+1 weights per row in matrix
