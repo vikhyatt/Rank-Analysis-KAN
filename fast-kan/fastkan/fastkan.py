@@ -59,9 +59,9 @@ class SplineLinear(nn.Linear):
             raise ValueError('Unsupported Initialization entered')
 
 class tied_SplineLinear(nn.Module):
-    def __init__(self, in_features, out_features: int, init_scale: float = 0.1, degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+    def __init__(self, in_features, out_features: int, init_scale = 0.1, degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
         super(tied_SplineLinear, self).__init__()
-        self.init_scale = init_scale
+        self.init_scale = init_scale[0]
         self.in_features = in_features
         self.out_features = out_features
         self.degree = degree
