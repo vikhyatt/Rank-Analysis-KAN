@@ -20,11 +20,12 @@ import math
 from torch.nn import Parameter
 import torch.distributions as dist
 from torch.autograd import Variable
+from torch.nn.utils.parametrizations import weight_norm
 
 from typing import *
 
 class SplineLinear(nn.Linear):
-    def __init__(self, in_features: int, out_features: int, init_scale = [0.1],init = 'default', **kw) -> None:
+    def __init__(self, in_features: int, out_features: int, init_scale = [0.1],init = 'default',**kw) -> None:
         self.init_scale = init_scale
         self.init = init
         super().__init__(in_features, out_features, bias=False, **kw)
@@ -58,7 +59,7 @@ class SplineLinear(nn.Linear):
             raise ValueError('Unsupported Initialization entered')
 
 class tied_SplineLinear(nn.Module):
-    def __init__(self, in_features, out_features: int, init_scale: float = 0.1, degree = 3 , use_same_weight = True ,bias=False, **kw):
+    def __init__(self, in_features, out_features: int, init_scale: float = 0.1, degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
         super(tied_SplineLinear, self).__init__()
         self.init_scale = init_scale
         self.in_features = in_features
@@ -67,10 +68,15 @@ class tied_SplineLinear(nn.Module):
         self.use_same_weight = use_same_weight
         #print(f"{degree+1} weights per row in matrix")
         # degree+1 weights per row in matrix
-        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        
         #self.fc1 = SplineLinear(self.degree + 1, self.out_features, init_scale = init_scale)
         #self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
-        self.weighted_sum  = nn.Conv1d(in_features, out_features, 1, bias = False)
+        if w_norm:  
+            self.weight = weight_norm(Parameter(torch.Tensor(out_features, self.degree + 1)), name = 'weight')
+            self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False), name = 'weighted_sum') 
+        else:
+            self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+            self.weighted_sum  = nn.Conv1d(in_features, out_features, 1, bias = False)
 
         #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
         #self.weight_deg = Parameter(torch.Tensor(self.degree))
@@ -225,6 +231,7 @@ class FastKANLayer(nn.Module):
         init = 'default',
         grid_type = 'uniform',
         denominator = None,
+        w_norm = 0,
     ) -> None:
         super().__init__()
         self.input_dim = input_dim
@@ -247,7 +254,7 @@ class FastKANLayer(nn.Module):
                     self.spline_linear = SplineLinear(degree_poly + 1, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
                     self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
-                                                       degree = degree_poly , use_same_weight = use_same_weight)
+                                                       degree = degree_poly , use_same_weight = use_same_weight, w_norm = w_norm)
                 
 
         else:
@@ -259,7 +266,7 @@ class FastKANLayer(nn.Module):
                     self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
                     self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
-                                                       degree = num_grids - 1, use_same_weight = use_same_weight)
+                                                       degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
         self.cpd = use_cpd
         if use_same_fn and self.cpd:
             self.circ = circ_layer(output_dim, spline_weight_init_scale)
