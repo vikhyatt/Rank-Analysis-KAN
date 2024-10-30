@@ -75,7 +75,7 @@ class tied_SplineLinear(nn.Module):
         #self.fc1 = SplineLinear(self.degree + 1, self.out_features, init_scale = init_scale)
         #self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
         if w_norm:  
-            self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False), name = 'weighted_sum') 
+            self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False)) 
             self.norm_factor = nn.Parameter(torch.tensor(1.0))
         else:
             self.weighted_sum  = nn.Conv1d(in_features, out_features, 1, bias = False)
