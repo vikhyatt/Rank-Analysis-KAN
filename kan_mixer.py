@@ -415,7 +415,13 @@ class KANMixer(nn.Module):
         return out
 
 
-
+    def normalize(self):
+        for layer in self.mixer_layers:
+            layer.normalize()
+            
+        self.patch_emb.normalize()
+        self.clf.normalize()
+        
 class MixerLayer(nn.Module):
     def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default', spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0):
         super(MixerLayer, self).__init__()
@@ -425,6 +431,10 @@ class MixerLayer(nn.Module):
         out = self.kan1(x)
         out = self.kan2(out)
         return out
+
+    def normalize(self):
+        self.kan1.normalize()
+        self.kan2.normalize()
 
 class KAN1(nn.Module):
     def __init__(self, num_patches, hidden_s, hidden_size, drop_p, off_act, use_poly = False, degree_poly = 3,
@@ -441,6 +451,11 @@ class KAN1(nn.Module):
         
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
+                      
+    def normalize(self):
+        self.fc1.normalize()
+        self.fc2.normalize()
+        
     def forward(self, x):
         #out = self.do1(self.act(self.fc1(self.ln(x))))
         #out = self.do2(self.fc2(out))
@@ -474,6 +489,11 @@ class KAN2(nn.Module):
         self.fc2 = KANLinear(hidden_c, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
+
+    def normalize(self):
+        self.fc1.normalize()
+        self.fc2.normalize()
+        
     def forward(self, x):
         
         #out = self.do1(self.act(self.fc1(self.ln(x).contiguous())))
