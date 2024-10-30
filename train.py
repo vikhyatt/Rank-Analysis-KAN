@@ -25,6 +25,8 @@ class Trainer(object):
         self.cutmix_beta = args.cutmix_beta
         self.cutmix_prob = args.cutmix_prob
         self.num_workers = args.num_workers
+        self.u_norm = args.u_norm
+        self.u_epoch = args.u_epoch
         self.model = model
         self.optim_name = 'none'
         self.min_lr = args.min_lr
@@ -293,6 +295,9 @@ class Trainer(object):
                 'val_acc': self.epoch_acc
                 }, step=self.num_steps
             )
+
+            if epoch % self.u_epoch == 0:
+                self.model.normalize()
 
             if epoch % 10 == 0:
                 PATH = f"../saved_models/{epoch}, {self.model_configs}.pt"
