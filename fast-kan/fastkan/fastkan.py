@@ -71,15 +71,17 @@ class tied_SplineLinear(nn.Module):
         # degree+1 weights per row in matrix
         
         self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False)) 
         
         #self.fc1 = SplineLinear(self.degree + 1, self.out_features, init_scale = init_scale)
         #self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        """
         if w_norm:  
             self.weighted_sum  = weight_norm(nn.Conv1d(in_features, out_features, 1, bias = False)) 
             self.norm_factor = nn.Parameter(torch.tensor(1.0))
         else:
             self.weighted_sum  = nn.Conv1d(in_features, out_features, 1, bias = False)
-
+        """
         #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
         #self.weight_deg = Parameter(torch.Tensor(self.degree))
         #self.weight_one = Parameter(torch.Tensor(self.out_features, 1))
@@ -107,7 +109,10 @@ class tied_SplineLinear(nn.Module):
         
         #nn.init.trunc_normal_(self.weighted_sum, mean=0, std=self.init_scale)
         nn.init.trunc_normal_(self.weighted_sum.weight, mean=0, std=self.init_scale)
-
+        
+    def normalize(self):
+        self.weight = F.normalize(self.weight, p=2, dim=-1)
+        
     def forward(self, x):
         # degree+1 weights per row in matrix
         #out = F.linear(x, self.weight, self.bias)
@@ -306,7 +311,10 @@ class FastKANLayer(nn.Module):
             base = self.base_linear(self.base_activation(x))
             ret = ret + base
         return ret
-
+        
+    def normalize(self):
+        self.spline_linear.normalize()
+        
     def plot_curve(
         self,
         input_index: int,
