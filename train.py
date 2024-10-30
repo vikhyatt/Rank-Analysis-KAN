@@ -270,12 +270,6 @@ class Trainer(object):
 
              #   self.compute_svd(epoch, test_dl, init = init)
             
-            if self.u_norm and epoch % self.u_epoch == 0:
-                if torch.cuda.device_count() == 1:
-                    self.model.normalize()
-                else:
-                    self.model.module.normalize()
-                print('NORMALIZED')
                 
             for batch in train_dl:
                 self._train_one_step(batch)
@@ -304,8 +298,11 @@ class Trainer(object):
             )
 
             if self.u_norm and epoch % self.u_epoch == 0:
-                self.model.normalize()
-
+                if torch.cuda.device_count() == 1:
+                    self.model.normalize()
+                else:
+                    self.model.module.normalize()
+            
             if epoch % 10 == 0:
                 PATH = f"../saved_models/{epoch}, {self.model_configs}.pt"
                 prev_PATH = f"../saved_models/{epoch-10}, {self.model_configs}.pt"
