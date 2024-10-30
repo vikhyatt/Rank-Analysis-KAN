@@ -125,7 +125,7 @@ class tied_SplineLinear(nn.Module):
         #x = torch.einsum('...ji,ij->...i', x, self.weight).contiguous()
         if self.w_norm:
             weight_normed_param = self.norm_factor * self.weight / torch.norm(self.weight)
-            x = (x * self.weight_normed_param).sum(dim=-1)
+            x = (x * weight_normed_param).sum(dim=-1)
         else:
             x = (x * self.weight).sum(dim=-1)
 
