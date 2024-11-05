@@ -178,7 +178,11 @@ class HankelLinear(nn.Module):
         
         hank =  self.weight.unfold(0, self.in_features, 1).permute(0,2,1) 
         hank = self.weighted_sum.unsqueeze(-1) * hank
-        x = torch.einsum('bhid,oid->bho', x, hank)
+        if len(x.shape) == 4:
+            x = torch.einsum('bhid,oid->bho', x, hank)
+        else:
+            x = torch.einsum('hid,oid->ho', x, hank)
+            
         return x
         
     
