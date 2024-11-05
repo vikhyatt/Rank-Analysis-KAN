@@ -323,7 +323,7 @@ class HireMLPNet(nn.Module):
 
 class KANMixer(nn.Module):
     def __init__(self,in_channels=3,img_size=32, patch_size=4, hidden_size=512, hidden_s=256, hidden_c=2048, num_layers=8, num_classes=10, drop_p=0., off_act=False, is_cls_token=False, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_pe = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, 
-                 skip_min = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,-1], grid_type = 'uniform', denominator = 0, w_norm = 0):
+                 skip_min = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,-1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False):
         super(KANMixer, self).__init__()
         num_patches = img_size // patch_size * img_size // patch_size
         # (b, c, h, w) -> (b, d, h//p, w//p) -> (b, h//p*w//p, d)
@@ -332,7 +332,7 @@ class KANMixer(nn.Module):
         print(f"Polynomial Basis: {use_poly}, Degree of Polynomial: {degree_poly}, Using Same Function: {use_same_fn}, Using same weights: {use_same_weight}, Positional Embeddings: {use_pe}, CPD Decomposition: {use_cpd}, Softmax Prod: {use_softmax_prod}, Init: {init}")
         self.rearr = Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_size, p2 = patch_size)
         self.patch_emb = KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, 
-                                   num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+                                   num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
         
 
         self.use_pe = use_pe
@@ -373,7 +373,7 @@ class KANMixer(nn.Module):
         self.mixer_layers = nn.Sequential(
             *[
                 MixerLayer(num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,num_grids = num_grids, skip_param = (1 - delta_skip*i), 
-                           init = init, spline_weight_init_scale = spline_weight_init_scale, grid= grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm) 
+                           init = init, spline_weight_init_scale = spline_weight_init_scale, grid= grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel) 
             for i in range(num_layers)
             ]
         )
@@ -382,7 +382,7 @@ class KANMixer(nn.Module):
         self.clf = KANLinear(hidden_size, num_classes, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, 
                              base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, 
                              use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, 
-                             grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+                             grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
 
 
     def forward(self, x):
@@ -423,10 +423,10 @@ class KANMixer(nn.Module):
         self.clf.normalize()
         
 class MixerLayer(nn.Module):
-    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default', spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0):
+    def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default', spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False):
         super(MixerLayer, self).__init__()
-        self.kan1 = KAN1(num_patches, hidden_s, hidden_size, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,num_grids = num_grids, skip_param = skip_param, init = init, spline_weight_init_scale = spline_weight_init_scale, grid = grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm)
-        self.kan2 = KAN2(hidden_size, hidden_c, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update= use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, skip_param = skip_param, init = init, spline_weight_init_scale = spline_weight_init_scale, grid = grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+        self.kan1 = KAN1(num_patches, hidden_s, hidden_size, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,num_grids = num_grids, skip_param = skip_param, init = init, spline_weight_init_scale = spline_weight_init_scale, grid = grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
+        self.kan2 = KAN2(hidden_size, hidden_c, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update= use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, skip_param = skip_param, init = init, spline_weight_init_scale = spline_weight_init_scale, grid = grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
     def forward(self, x):
         out = self.kan1(x)
         out = self.kan2(out)
@@ -438,16 +438,16 @@ class MixerLayer(nn.Module):
 
 class KAN1(nn.Module):
     def __init__(self, num_patches, hidden_s, hidden_size, drop_p, off_act, use_poly = False, degree_poly = 3,
-                  use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0):
+                  use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False):
         super(KAN1, self).__init__()
         self.ln = nn.LayerNorm(hidden_size)
         self.skip_param = skip_param
         
         #self.fc1 = nn.Conv1d(num_patches, hidden_s, kernel_size=1)
-        self.fc1 = KANLinear(num_patches, hidden_s,use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+        self.fc1 = KANLinear(num_patches, hidden_s,use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
         self.do1 = nn.Dropout(p=drop_p)
         #self.fc2 = nn.Conv1d(hidden_s, num_patches, kernel_size=1)
-        self.fc2 = KANLinear(hidden_s, num_patches, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+        self.fc2 = KANLinear(hidden_s, num_patches, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
         
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
@@ -480,13 +480,13 @@ class KAN1(nn.Module):
         return out+ self.skip_param*initial_x
 
 class KAN2(nn.Module):
-    def __init__(self, hidden_size, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0):
+    def __init__(self, hidden_size, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False):
         super(KAN2, self).__init__()
         self.ln = nn.LayerNorm(hidden_size)
         self.skip_param = skip_param
-        self.fc1 = KANLinear(hidden_size, hidden_c,use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm =  w_norm)
+        self.fc1 = KANLinear(hidden_size, hidden_c,use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm =  w_norm, use_hankel = use_hankel)
         self.do1 = nn.Dropout(p=drop_p)
-        self.fc2 = KANLinear(hidden_c, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm)
+        self.fc2 = KANLinear(hidden_c, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init,spline_weight_init_scale = spline_weight_init_scale, grid_min = grid[0], grid_max = grid[1], grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel)
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
 
