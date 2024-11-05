@@ -39,6 +39,7 @@ def get_model(args):
             use_base_update = True,
             base_activation = F.silu,
             use_same_fn = True,
+            use_hankel = True, 
             use_same_weight = False,
             use_pe = False,
             use_cpd = False,
@@ -51,7 +52,7 @@ def get_model(args):
             grid_type = args.grid_type,
             denominator = args.denominator,
             w_norm = args.w_norm, 
-            use_hankel = True, 
+            
         )
 
     elif args.model=='kat_mixer':
