@@ -150,6 +150,39 @@ class tied_SplineLinear(nn.Module):
         #out = F.linear(out, self.weighted_sum, self.bias).contiguous()
         return x
 
+
+class HankelLinear(nn.Module):
+    def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        super(tied_SplineLinear, self).__init__()
+        self.init_scale = init_scale[0]
+        self.in_features = in_features
+        self.out_features = out_features
+        self.degree = degree
+        self.use_same_weight = use_same_weight
+        self.w_norm = w_norm
+        
+        self.weight = Parameter(torch.Tensor(out_features + in_features - 1, self.degree + 1))
+        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        
+        self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        nn.init.trunc_normal_(self.weighted_sum, mean=0, std=self.init_scale)
+       
+    def normalize(self):
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+        
+    def forward(self, x):
+        
+        hank =  self.weight.unfold(0, self.in_features, 1).permute(0,2,1) 
+        hank = self.weighted_sum.unsqueeze(-1) * hank
+        x = torch.einsum('bhid,oid->bho', x, hank)
+        return x
+        
+    
+
 def circulant(tensor, dim):
     """get a circulant version of the tensor along the {dim} dimension.
     
@@ -238,6 +271,7 @@ class FastKANLayer(nn.Module):
         use_same_fn = False,
         use_same_weight = False,
         use_cpd = False,
+        use_hankel = False,
         use_softmax_prod = False,
         init = 'default',
         grid_type = 'uniform',
@@ -256,7 +290,7 @@ class FastKANLayer(nn.Module):
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
             self.layernorm = nn.LayerNorm(input_dim)
 
-        if use_poly:
+        if use_poly and not use_hankel:
             self.rbf = PolyBasisFunction(degree_poly)
             if not use_same_fn:
                 self.spline_linear = SplineLinear(input_dim * (degree_poly+1), output_dim, spline_weight_init_scale, init = init)
@@ -268,7 +302,7 @@ class FastKANLayer(nn.Module):
                                                        degree = degree_poly , use_same_weight = use_same_weight, w_norm = w_norm)
                 
 
-        else:
+        elif not use_hankel:
             self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             if not use_same_fn:
                 self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init)
@@ -278,6 +312,12 @@ class FastKANLayer(nn.Module):
                 else:
                     self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
+                    
+        else:
+            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                                                       degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
+            
         self.cpd = use_cpd
         if use_same_fn and self.cpd:
             self.circ = circ_layer(output_dim, spline_weight_init_scale)
