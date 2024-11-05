@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=myjob
 #SBATCH --ntasks=1
-#SBATCH --parition=h100
+#SBATCH --partition=h100
 #SBATCH --cpus-per-task=12
 #SBATCH --gres=gpu:2        # Request 1 GPU
 #SBATCH --mem=120G           # Memory request for the job
