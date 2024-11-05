@@ -185,7 +185,53 @@ class HankelLinear(nn.Module):
             
         return x
         
-    
+class tied_SplineLinear_FAST(nn.Module):
+    def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        super(tied_SplineLinear_FAST, self).__init__()
+        self.init_scale = init_scale[0]
+        self.in_features = in_features
+        self.out_features = out_features
+        self.degree = degree
+        self.w_norm = w_norm
+        self.use_same_weight = use_same_weight
+        
+        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        
+        self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        nn.init.trunc_normal_(self.weighted_sum, mean=0, std=self.init_scale)
+        
+    def normalize(self):
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+        
+    def forward(self, x):
+        weights =  self.weight.unsqueeze(-2).expand(self.out_features, self.in_features, self.degree + 1) 
+        weights = self.weighted_sum.unsqueeze(-1) * weights
+        if len(x.shape) == 4:
+            x = torch.einsum('bhid,oid->bho', x, weights)
+        else:
+            x = torch.einsum('hid,oid->ho', x, weights)
+        return x
+
+        #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
+        #final_weight = torch.cat((self.weight_deg.repeat(self.out_features, 1), self.weight_one), dim = -1)
+        #out = F.linear(x, final_weight, self.bias)
+
+        #degree+1 weights shared across the entire matrix
+        #final_weight = self.weight_deg.repeat(self.out_features, 1)
+        #out = F.linear(x, final_weight, self.bias)
+        
+        #out = out.permute(*range(out.ndim - 2), -1, -2).unsqueeze(-2)
+        #print(out.shape)
+        #out = torch.matmul(out, self.weighted_sum).squeeze(-1).squeeze(-1)
+        #print(out.shape)
+        #out = torch.einsum('...ji,ij->...i', out, self.weighted_sum).contiguous()
+        #out = F.linear(out, self.weighted_sum, self.bias).contiguous()
+        return x
 
 def circulant(tensor, dim):
     """get a circulant version of the tensor along the {dim} dimension.
@@ -302,7 +348,7 @@ class FastKANLayer(nn.Module):
                 if self.use_same_weight:
                     self.spline_linear = SplineLinear(degree_poly + 1, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
-                    self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                    self.spline_linear = tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = degree_poly , use_same_weight = use_same_weight, w_norm = w_norm)
                 
 
@@ -314,7 +360,7 @@ class FastKANLayer(nn.Module):
                 if self.use_same_weight:
                     self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
-                    self.spline_linear = tied_SplineLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                    self.spline_linear = tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
                     
         else:
