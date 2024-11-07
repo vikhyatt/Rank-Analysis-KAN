@@ -39,7 +39,7 @@ def get_model(args):
             use_base_update = True,
             base_activation = F.silu,
             use_same_fn = True,
-            use_hankel = True, 
+            use_hankel = False,
             use_same_weight = False,
             use_pe = False,
             use_cpd = False,

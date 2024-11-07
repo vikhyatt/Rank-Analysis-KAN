@@ -1,0 +1,11 @@
+{"time":"2024-11-05T13:07:49.569223207+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-05T13:07:49.569325088+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241105_130749-4p5vsise/logs/debug-core.log"}
+{"time":"2024-11-05T13:07:49.574814292+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-05T13:07:49.600082402+01:00","level":"INFO","msg":"created new stream","id":"4p5vsise"}
+{"time":"2024-11-05T13:07:49.600112757+01:00","level":"INFO","msg":"stream: started","id":"4p5vsise"}
+{"time":"2024-11-05T13:07:49.600124134+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"4p5vsise"}}
+{"time":"2024-11-05T13:07:49.600144455+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"4p5vsise"}}
+{"time":"2024-11-05T13:07:49.600129142+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"4p5vsise"}}
+{"time":"2024-11-05T13:07:49.890903519+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-05T13:07:49.891758761+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-05T20:49:35.48985412+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/4p5vsise/file_stream"}

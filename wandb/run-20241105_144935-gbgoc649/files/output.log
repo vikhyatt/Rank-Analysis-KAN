@@ -1,0 +1,13 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 85, in <module>
+    model = get_model(args)
+  File "/home/vagrawal/Rank-Analysis-KAN/utils.py", line 25, in get_model
+    model = KANMixer(
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 334, in __init__
+    self.patch_emb = KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 318, in __init__
+    self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 156, in __init__
+    super(tied_SplineLinear, self).__init__()
+TypeError: super(type, obj): obj must be an instance or subtype of type

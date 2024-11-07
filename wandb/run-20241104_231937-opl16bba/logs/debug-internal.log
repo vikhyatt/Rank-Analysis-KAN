@@ -1,0 +1,11 @@
+{"time":"2024-11-04T23:19:39.046824524+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-04T23:19:39.046972976+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241104_231937-opl16bba/logs/debug-core.log"}
+{"time":"2024-11-04T23:19:39.066097214+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T23:19:39.594411761+01:00","level":"INFO","msg":"created new stream","id":"opl16bba"}
+{"time":"2024-11-04T23:19:39.594465431+01:00","level":"INFO","msg":"stream: started","id":"opl16bba"}
+{"time":"2024-11-04T23:19:39.594500353+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"opl16bba"}}
+{"time":"2024-11-04T23:19:39.594493032+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"opl16bba"}}
+{"time":"2024-11-04T23:19:39.5945114+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"opl16bba"}}
+{"time":"2024-11-04T23:19:40.274716039+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T23:19:41.957295285+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-05T01:57:57.581210497+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/opl16bba/file_stream"}

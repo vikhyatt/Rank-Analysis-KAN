@@ -1,0 +1,33 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241106_083020-17yjt03p
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/17yjt03p
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8737016
+wandb: - 0.012 MB of 0.012 MB uploadedwandb:                                                                                
+wandb: 
+wandb: Run history:
+wandb:      acc ▇▅▂▇▇▇▄▆▇▇▇▇▁▅█▇█▇▄▄▆▇▁▄██▁█▅██▇███▇████
+wandb:    epoch ▁▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇▇▇██
+wandb:     loss ▅▂▅█▂▅▇▅▂▅▂█▂▄▆▇▇█▂▂▁▇▃▂▆▁▇▁▃▅▂▇▁▁▅▆█▁▇▁
+wandb:       lr █████████▇▇▇▇▇▇▆▆▆▆▆▅▅▄▄▄▄▃▃▃▂▂▂▂▂▂▁▁▁▁▁
+wandb:  val_acc ▃▄▄▂▃▄▃▅▄▂▃▃▃▁▄▅▅▁▄▃▅▄▁▅▃▆▆▆▆▇▇▅▆█▆▇▇█▇▇
+wandb: val_loss ▅▄▃▅▅▂▅▁▆▆▄▅▇▆▇▅▅▇▅█▆█▄▅█▅▇▇▆▆▄▆▆▅▆▅▅▅▅▄
+wandb: 
+wandb: Run summary:
+wandb:      acc 0.94712
+wandb:    epoch 600
+wandb:     loss 0.99594
+wandb:       lr 0.0
+wandb:  val_acc 0.6842
+wandb: val_loss 1.8859
+wandb: 
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/17yjt03p
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241106_083020-17yjt03p/logs

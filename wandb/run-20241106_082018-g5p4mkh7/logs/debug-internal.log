@@ -1,0 +1,18 @@
+{"time":"2024-11-06T08:20:19.006582813+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-06T08:20:19.006632327+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241106_082018-g5p4mkh7/logs/debug-core.log"}
+{"time":"2024-11-06T08:20:19.007791641+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-06T08:20:19.014140896+01:00","level":"INFO","msg":"created new stream","id":"g5p4mkh7"}
+{"time":"2024-11-06T08:20:19.014163179+01:00","level":"INFO","msg":"stream: started","id":"g5p4mkh7"}
+{"time":"2024-11-06T08:20:19.014171982+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:19.01417691+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:19.014181817+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:19.258873876+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-06T08:20:19.267735058+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-06T08:20:21.483013445+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-06T08:20:21.486067938+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-06T08:20:24.236973723+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-06T08:20:26.062822918+01:00","level":"INFO","msg":"stream: closing","id":"g5p4mkh7"}
+{"time":"2024-11-06T08:20:26.062846974+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:26.062873764+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:26.062916818+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"g5p4mkh7"}}
+{"time":"2024-11-06T08:20:26.063171777+01:00","level":"INFO","msg":"stream: closed","id":"g5p4mkh7"}

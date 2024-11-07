@@ -1,0 +1,40 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241106_082323-fy2ck2cw
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/fy2ck2cw
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 91, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 234, in fit
+    checkpoint = torch.load(PATH, map_location = self.device, weights_only=True)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 1065, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 468, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 449, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '../saved_models/420, kan_mixer_imgnet_adam_cosine_0.0001_PS16_HSize225_HC900_HS112_NL9_SM1.0_PARAMS8626200_initdefault_scale_[0.11]_NG8_Griduniform-2.0,2.0_WD0.0_D-2.0_WN0.0.pt'
+wandb: - 0.013 MB of 0.013 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/fy2ck2cw
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241106_082323-fy2ck2cw/logs
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8626200
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 91, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 234, in fit
+    checkpoint = torch.load(PATH, map_location = self.device, weights_only=True)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 1065, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 468, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 449, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '../saved_models/420, kan_mixer_imgnet_adam_cosine_0.0001_PS16_HSize225_HC900_HS112_NL9_SM1.0_PARAMS8626200_initdefault_scale_[0.11]_NG8_Griduniform-2.0,2.0_WD0.0_D-2.0_WN0.0.pt'

@@ -1,0 +1,13 @@
+{"time":"2024-11-04T09:22:47.056003816+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-04T09:22:47.056085809+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241104_092246-55xe4ujv/logs/debug-core.log"}
+{"time":"2024-11-04T09:22:47.060637344+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T09:22:47.117084127+01:00","level":"INFO","msg":"created new stream","id":"55xe4ujv"}
+{"time":"2024-11-04T09:22:47.117147232+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"55xe4ujv"}}
+{"time":"2024-11-04T09:22:47.11746067+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"55xe4ujv"}}
+{"time":"2024-11-04T09:22:47.117596382+01:00","level":"INFO","msg":"stream: started","id":"55xe4ujv"}
+{"time":"2024-11-04T09:22:47.117600258+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"55xe4ujv"}}
+{"time":"2024-11-04T09:22:47.346804804+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T09:22:47.374020186+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T21:12:02.997675037+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/55xe4ujv/file_stream"}
+{"time":"2024-11-04T21:17:35.764265855+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/55xe4ujv/file_stream"}
+{"time":"2024-11-04T21:50:38.389431093+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/55xe4ujv/file_stream"}

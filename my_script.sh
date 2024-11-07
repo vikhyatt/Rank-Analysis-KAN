@@ -2,21 +2,24 @@
 #SBATCH --job-name=myjob
 #SBATCH --ntasks=1
 #SBATCH --partition=h100
-#SBATCH --cpus-per-task=12
-#SBATCH --gres=gpu:2        # Request 1 GPU
-#SBATCH --mem=120G           # Memory request for the job
-#SBATCH --time=4:00:00     # Set a time limit
+#SBATCH --cpus-per-task=1
+#SBATCH --gres=gpu:1        # Request 1 GPU
+#SBATCH --mem=40G           # Memory request for the job
+#SBATCH --time=1:00:00     # Set a time limit
 
 # Activate your virtual environment
 source ../venvs/kan/bin/activate
-num_workers=12
+num_workers=1
 eval_batch_size=512
 batch_size=256
-num_layers=9
-hidden_c=900
-hidden_s=112
-hidden_size=225
+num_layers=6
+hidden_c=1024
+hidden_s=128
+hidden_size=256
 patch_size=16
+wd=5e-5
+lr=1e-3
+denom=0
 
 # Now, you can run your Python script
 #python main.py --init 'uniform' --init-scale 0.02 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size 128 --num-workers 12 --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size 256 --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0
@@ -33,7 +36,7 @@ patch_size=16
 #python main.py --init 'default' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'chebyshev' --denominator 1.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 
 #python main.py --init 'default' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'uniform' --denominator -2.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
-python main.py --init 'default' --u-norm 0 --u-epoch 1 --w-norm 0 --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'uniform' --denominator 0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size $patch_size --hidden-c $hidden_c --hidden-s $hidden_s --hidden-size $hidden_size  --batch-size $batch_size --num-layers $num_layers --skip-min 1.0 --checkpoint-epoch 0 
+python main.py --init 'default' --u-norm 0 --u-epoch 1 --w-norm 0 --init-scale 0.11 --lr $lr --weight-decay $wd --num-grids 8 --grid-type 'uniform' --denominator $denom --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size $patch_size --hidden-c $hidden_c --hidden-s $hidden_s --hidden-size $hidden_size  --batch-size $batch_size --num-layers $num_layers --skip-min 1.0 --checkpoint-epoch 0 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'uniform' --denominator 0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 5e-5 --num-grids 8 --grid-type 'uniform' --denominator 0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'chebyshev' --denominator 1.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 

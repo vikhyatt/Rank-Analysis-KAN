@@ -1,0 +1,18 @@
+{"time":"2024-11-05T14:49:35.496853028+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-05T14:49:35.4969153+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241105_144935-gbgoc649/logs/debug-core.log"}
+{"time":"2024-11-05T14:49:35.49810844+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-05T14:49:35.528348618+01:00","level":"INFO","msg":"created new stream","id":"gbgoc649"}
+{"time":"2024-11-05T14:49:35.528382639+01:00","level":"INFO","msg":"stream: started","id":"gbgoc649"}
+{"time":"2024-11-05T14:49:35.529657931+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:35.529657911+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:35.528395097+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:36.130896465+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-05T14:49:36.132331636+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-05T14:49:39.422056736+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-05T14:49:39.425780151+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-05T14:49:42.202629974+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-05T14:49:43.428331886+01:00","level":"INFO","msg":"stream: closing","id":"gbgoc649"}
+{"time":"2024-11-05T14:49:43.428354209+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:43.428373728+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:43.428384114+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"gbgoc649"}}
+{"time":"2024-11-05T14:49:43.428708147+01:00","level":"INFO","msg":"stream: closed","id":"gbgoc649"}

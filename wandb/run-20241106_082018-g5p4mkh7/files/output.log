@@ -1,0 +1,14 @@
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8626200
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 91, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 234, in fit
+    checkpoint = torch.load(PATH, map_location = self.device, weights_only=True)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 1065, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 468, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/serialization.py", line 449, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '../saved_models/420, kan_mixer_imgnet_adam_cosine_0.0001_PS16_HSize225_HC900_HS112_NL9_SM1.0_PARAMS8626200_initdefault_scale_[0.11]_NG8_Griduniform-2.0,2.0_WD0.0_D-2.0_WN0.0.pt'

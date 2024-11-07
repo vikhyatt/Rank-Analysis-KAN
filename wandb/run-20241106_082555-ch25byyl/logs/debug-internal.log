@@ -1,0 +1,18 @@
+{"time":"2024-11-06T08:25:55.723299044+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-06T08:25:55.723344903+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241106_082555-ch25byyl/logs/debug-core.log"}
+{"time":"2024-11-06T08:25:55.724567722+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-06T08:25:55.72799477+01:00","level":"INFO","msg":"created new stream","id":"ch25byyl"}
+{"time":"2024-11-06T08:25:55.728017363+01:00","level":"INFO","msg":"stream: started","id":"ch25byyl"}
+{"time":"2024-11-06T08:25:55.728024063+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:25:55.728059576+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:25:55.728033978+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:25:55.976771376+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-06T08:25:55.977754518+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-06T08:25:58.145602595+01:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-11-06T08:25:58.148787272+01:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-11-06T08:25:58.798004501+01:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-11-06T08:26:00.012969444+01:00","level":"INFO","msg":"stream: closing","id":"ch25byyl"}
+{"time":"2024-11-06T08:26:00.012995192+01:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:26:00.013015232+01:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:26:00.013020079+01:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"ch25byyl"}}
+{"time":"2024-11-06T08:26:00.013206546+01:00","level":"INFO","msg":"stream: closed","id":"ch25byyl"}

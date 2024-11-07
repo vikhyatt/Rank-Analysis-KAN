@@ -1,0 +1,106 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241105_145048-0equh048
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/0equh048
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8737016
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 91, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 275, in fit
+    self._train_one_step(batch)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 110, in _train_one_step
+    out = self.model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 186, in forward
+    outputs = self.parallel_apply(replicas, inputs, module_kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 201, in parallel_apply
+    return parallel_apply(replicas, inputs, kwargs, self.device_ids[:len(replicas)])
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 109, in parallel_apply
+    output.reraise()
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/_utils.py", line 706, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in replica 0 on device 0.
+Original Traceback (most recent call last):
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 84, in _worker
+    output = module(*input, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 414, in forward
+    out = self.clf(out, use_layernorm = False)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 337, in forward
+    ret = self.spline_linear(spline_basis)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 181, in forward
+    x = torch.einsum('bhid,oid->bho', x, hank)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/functional.py", line 386, in einsum
+    return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+RuntimeError: einsum(): the number of subscripts in the equation (4) does not match the number of dimensions (3) for operand 0 and no ellipsis was given
+
+wandb: - 0.015 MB of 0.015 MB uploadedwandb: \ 0.015 MB of 0.015 MB uploadedwandb: | 0.018 MB of 0.018 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/0equh048
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241105_145048-0equh048/logs
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 91, in <module>
+    trainer.fit(train_dl, test_dl, init = args.init)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 275, in fit
+    self._train_one_step(batch)
+  File "/home/vagrawal/Rank-Analysis-KAN/train.py", line 110, in _train_one_step
+    out = self.model(img)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 186, in forward
+    outputs = self.parallel_apply(replicas, inputs, module_kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/data_parallel.py", line 201, in parallel_apply
+    return parallel_apply(replicas, inputs, kwargs, self.device_ids[:len(replicas)])
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 109, in parallel_apply
+    output.reraise()
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/_utils.py", line 706, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in replica 0 on device 0.
+Original Traceback (most recent call last):
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/parallel/parallel_apply.py", line 84, in _worker
+    output = module(*input, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 414, in forward
+    out = self.clf(out, use_layernorm = False)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 337, in forward
+    ret = self.spline_linear(spline_basis)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 181, in forward
+    x = torch.einsum('bhid,oid->bho', x, hank)
+  File "/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/functional.py", line 386, in einsum
+    return _VF.einsum(equation, operands)  # type: ignore[attr-defined]
+RuntimeError: einsum(): the number of subscripts in the equation (4) does not match the number of dimensions (3) for operand 0 and no ellipsis was given
+

@@ -1,0 +1,10 @@
+{"time":"2024-11-01T11:58:24.110514388+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-01T11:58:24.11057639+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241101_115823-xyvu9nn6/logs/debug-core.log"}
+{"time":"2024-11-01T11:58:24.115253012+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-01T11:58:24.120402377+01:00","level":"INFO","msg":"created new stream","id":"xyvu9nn6"}
+{"time":"2024-11-01T11:58:24.120429747+01:00","level":"INFO","msg":"stream: started","id":"xyvu9nn6"}
+{"time":"2024-11-01T11:58:24.120435756+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"xyvu9nn6"}}
+{"time":"2024-11-01T11:58:24.120447874+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"xyvu9nn6"}}
+{"time":"2024-11-01T11:58:24.120447974+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"xyvu9nn6"}}
+{"time":"2024-11-01T11:58:25.100022691+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-01T11:58:25.100840266+01:00","level":"INFO","msg":"Starting system monitor"}

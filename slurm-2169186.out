@@ -1,0 +1,14 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241031_162057-yct1gqht
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cg20.0_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/yct1gqht
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Number of Learnable Parameters: 8639422
+/home/vagrawal/venvs/kan/lib64/python3.9/site-packages/torch/optim/lr_scheduler.py:1063: UserWarning: To get the last learning rate computed by the scheduler, please use `get_last_lr()`.
+  _warn_get_lr_called_within_step(self)
+slurmstepd: error: *** JOB 2169186 ON ixl02 CANCELLED AT 2024-10-31T19:38:55 ***

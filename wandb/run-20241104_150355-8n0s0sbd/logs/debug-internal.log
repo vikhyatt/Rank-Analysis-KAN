@@ -1,0 +1,15 @@
+{"time":"2024-11-04T15:03:55.715276473+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-04T15:03:55.715327419+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241104_150355-8n0s0sbd/logs/debug-core.log"}
+{"time":"2024-11-04T15:03:55.71657827+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-04T15:03:55.721144435+01:00","level":"INFO","msg":"created new stream","id":"8n0s0sbd"}
+{"time":"2024-11-04T15:03:55.721164324+01:00","level":"INFO","msg":"stream: started","id":"8n0s0sbd"}
+{"time":"2024-11-04T15:03:55.721170343+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"8n0s0sbd"}}
+{"time":"2024-11-04T15:03:55.721185476+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"8n0s0sbd"}}
+{"time":"2024-11-04T15:03:55.721198936+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"8n0s0sbd"}}
+{"time":"2024-11-04T15:03:55.980234084+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-04T15:03:55.981194563+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-04T20:02:26.415819259+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2024-11-04T20:14:43.768860767+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/8n0s0sbd/file_stream"}
+{"time":"2024-11-04T21:17:23.423852565+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/8n0s0sbd/file_stream"}
+{"time":"2024-11-04T21:20:26.556335453+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2024-11-04T21:40:56.577603739+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}

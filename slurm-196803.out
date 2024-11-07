@@ -1,0 +1,39 @@
+wandb: Using wandb-core as the SDK backend. Please refer to https://wandb.me/wandb-core for more information.
+wandb: Currently logged in as: zeusisgreat (zeusisgreat-indian-institute-of-technology-bombay). Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.18.2
+wandb: Run data is saved locally in /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241105_144935-gbgoc649
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run kan_mixer_imgnet_adam_cosine_aa_cm
+wandb: ⭐️ View project at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: 🚀 View run at https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/gbgoc649
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 85, in <module>
+    model = get_model(args)
+  File "/home/vagrawal/Rank-Analysis-KAN/utils.py", line 25, in get_model
+    model = KANMixer(
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 334, in __init__
+    self.patch_emb = KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 318, in __init__
+    self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 156, in __init__
+    super(tied_SplineLinear, self).__init__()
+TypeError: super(type, obj): obj must be an instance or subtype of type
+wandb: - 0.013 MB of 0.013 MB uploadedwandb: \ 0.013 MB of 0.013 MB uploadedwandb: | 0.015 MB of 0.015 MB uploadedwandb:                                                                                
+wandb: 🚀 View run kan_mixer_imgnet_adam_cosine_aa_cm at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/runs/gbgoc649
+wandb: ⭐️ View project at: https://wandb.ai/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer
+wandb: Synced 4 W&B file(s), 0 media file(s), 3 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20241105_144935-gbgoc649/logs
+Device using: cuda
+Polynomial Basis: False, Degree of Polynomial: 2, Using Same Function: True, Using same weights: False, Positional Embeddings: False, CPD Decomposition: False, Softmax Prod: False, Init: default
+Traceback (most recent call last):
+  File "/home/vagrawal/Rank-Analysis-KAN/main.py", line 85, in <module>
+    model = get_model(args)
+  File "/home/vagrawal/Rank-Analysis-KAN/utils.py", line 25, in get_model
+    model = KANMixer(
+  File "/home/vagrawal/Rank-Analysis-KAN/kan_mixer.py", line 334, in __init__
+    self.patch_emb = KANLinear((patch_size ** 2) * in_channels, hidden_size, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 318, in __init__
+    self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale,
+  File "/home/vagrawal/Rank-Analysis-KAN/fast-kan/fastkan/fastkan.py", line 156, in __init__
+    super(tied_SplineLinear, self).__init__()
+TypeError: super(type, obj): obj must be an instance or subtype of type

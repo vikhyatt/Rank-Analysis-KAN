@@ -1,0 +1,26 @@
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Current SDK version is 0.18.2
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Configure stats pid to 107587
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Loading settings from /home/vagrawal/.config/wandb/settings
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Loading settings from /home/vagrawal/Rank-Analysis-KAN/wandb/settings
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Loading settings from environment variables: {}
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program_abspath': '/home/vagrawal/Rank-Analysis-KAN/main.py', 'program': '/home/vagrawal/Rank-Analysis-KAN/main.py'}
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_setup.py:_flush():79] Applying login settings: {}
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:_log_setup():532] Logging user logs to /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241101_200856-c7qcshew/logs/debug.log
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:_log_setup():533] Logging internal logs to /home/vagrawal/Rank-Analysis-KAN/wandb/run-20241101_200856-c7qcshew/logs/debug-internal.log
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:init():616] calling init triggers
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:init():623] wandb.init called with sweep_config: {}
+config: {'dataset': 'imgnet', 'model': 'kan_mixer', 'batch_size': 600, 'eval_batch_size': 600, 'num_workers': 12, 'seed': 3407, 'epochs': 600, 'checkpoint_epoch': 140, 'init': 'default', 'init_scale': [0.11], 'grid_min': -2.0, 'grid_max': 2.0, 'denominator': -2.0, 'grid_type': 'uniform', 'w_norm': 0, 'u_norm': 0.0, 'u_epoch': 1, 'patch_size': 16, 'hidden_size': 225, 'hidden_c': 900, 'hidden_s': 112, 'num_layers': 9, 'num_grids': 8, 'drop_p': 0.0, 'use_ffcv': 0.0, 'off_act': False, 'is_cls_token': False, 'skip_min': 1.0, 'lr': 0.0001, 'min_lr': 1e-06, 'momentum': 0.9, 'optimizer': 'adam', 'scheduler': 'cosine', 'beta1': 0.9, 'beta2': 0.99, 'weight_decay': 0.0, 'off_nesterov': False, 'label_smoothing': 0.1, 'gamma': 0.1, 'warmup_epoch': 5, 'autoaugment': True, 'clip_grad': 20.0, 'cutmix_beta': 1.0, 'cutmix_prob': 0.5, 'device': device(type='cuda'), 'grid': [-2.0, 2.0], 'nesterov': True}
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:init():666] starting backend
+2024-11-01 20:08:56,307 INFO    MainThread:107587 [wandb_init.py:init():670] sending inform_init request
+2024-11-01 20:08:56,308 INFO    MainThread:107587 [backend.py:_multiprocessing_setup():104] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-11-01 20:08:56,309 INFO    MainThread:107587 [wandb_init.py:init():683] backend started and connected
+2024-11-01 20:08:56,311 INFO    MainThread:107587 [wandb_init.py:init():778] updated telemetry
+2024-11-01 20:08:56,329 INFO    MainThread:107587 [wandb_init.py:init():811] communicating run to backend with 90.0 second timeout
+2024-11-01 20:08:56,552 INFO    MainThread:107587 [wandb_init.py:init():862] starting run threads in backend
+2024-11-01 20:08:56,768 INFO    MainThread:107587 [wandb_run.py:_console_start():2464] atexit reg
+2024-11-01 20:08:56,769 INFO    MainThread:107587 [wandb_run.py:_redirect():2312] redirect: wrap_raw
+2024-11-01 20:08:56,769 INFO    MainThread:107587 [wandb_run.py:_redirect():2377] Wrapping output streams.
+2024-11-01 20:08:56,769 INFO    MainThread:107587 [wandb_run.py:_redirect():2402] Redirects installed.
+2024-11-01 20:08:56,772 INFO    MainThread:107587 [wandb_init.py:init():906] run started, returning control to user process
+2024-11-01 20:08:59,477 INFO    MainThread:107587 [wandb_run.py:_config_callback():1393] config_cb None None {'dataset': 'imgnet', 'model': 'kan_mixer', 'batch_size': 600, 'eval_batch_size': 600, 'num_workers': 12, 'seed': 3407, 'epochs': 600, 'checkpoint_epoch': 140, 'init': 'default', 'init_scale': [0.11], 'grid_min': -2.0, 'grid_max': 2.0, 'denominator': -2.0, 'grid_type': 'uniform', 'w_norm': 0, 'u_norm': 0.0, 'u_epoch': 1, 'patch_size': 16, 'hidden_size': 225, 'hidden_c': 900, 'hidden_s': 112, 'num_layers': 9, 'num_grids': 8, 'drop_p': 0.0, 'use_ffcv': 0.0, 'off_act': False, 'is_cls_token': False, 'skip_min': 1.0, 'lr': 0.0001, 'min_lr': 1e-06, 'momentum': 0.9, 'optimizer': 'adam', 'scheduler': 'cosine', 'beta1': 0.9, 'beta2': 0.99, 'weight_decay': 0.0, 'off_nesterov': False, 'label_smoothing': 0.1, 'gamma': 0.1, 'warmup_epoch': 5, 'autoaugment': True, 'clip_grad': 20.0, 'cutmix_beta': 1.0, 'cutmix_prob': 0.5, 'device': 'cuda', 'grid': [-2.0, 2.0], 'nesterov': True, 'padding': 28, 'size': 224, 'mean': [0.485, 0.456, 0.406], 'std': [0.229, 0.224, 0.225], 'num_classes': 100, 'model_configs': 'kan_mixer_imgnet_adam_cosine_0.0001_PS16_HSize225_HC900_HS112_NL9_SM1.0_PARAMS8639422_initdefault_scale_[0.11]_NG8_Griduniform-2.0,2.0_WD0.0_D-2.0_WN0'}

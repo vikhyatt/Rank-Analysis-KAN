@@ -1,0 +1,13 @@
+{"time":"2024-11-01T12:00:20.91703785+01:00","level":"INFO","msg":"using version","core version":"0.18.2"}
+{"time":"2024-11-01T12:00:20.917092221+01:00","level":"INFO","msg":"created symlink","path":"/home/vagrawal/Rank-Analysis-KAN/wandb/run-20241101_120020-miuy80v1/logs/debug-core.log"}
+{"time":"2024-11-01T12:00:20.921149964+01:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-11-01T12:00:21.038750159+01:00","level":"INFO","msg":"created new stream","id":"miuy80v1"}
+{"time":"2024-11-01T12:00:21.038806102+01:00","level":"INFO","msg":"stream: started","id":"miuy80v1"}
+{"time":"2024-11-01T12:00:21.038836157+01:00","level":"INFO","msg":"sender: started","stream_id":{"value":"miuy80v1"}}
+{"time":"2024-11-01T12:00:21.038830659+01:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"miuy80v1"}}
+{"time":"2024-11-01T12:00:21.038854735+01:00","level":"INFO","msg":"handler: started","stream_id":{"value":"miuy80v1"}}
+{"time":"2024-11-01T12:00:21.311291975+01:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-11-01T12:00:21.312073497+01:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-11-01T16:01:51.922131066+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/miuy80v1/file_stream"}
+{"time":"2024-11-01T18:28:23.403247955+01:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2024-11-01T18:32:40.9353102+01:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/zeusisgreat-indian-institute-of-technology-bombay/mlp_mixer/miuy80v1/file_stream"}
