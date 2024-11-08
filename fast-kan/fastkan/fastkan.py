@@ -64,7 +64,7 @@ class SplineLinear(nn.Linear):
     def finite_difference(self, degree = 1):
         w_s = self.weight.view(self.out_features, self.in_features // self.degree, self.degree)
         for i in range(degree):
-            w_s = (w_s.narrow(2, 1, w_s.size(2)-1) - w_s.narrow(1, 0, w_s.size(2)-1))
+            w_s = (w_s.narrow(2, 1, w_s.size(2)-1) - w_s.narrow(2, 0, w_s.size(2)-1))
         return (w_s ** 2).sum()
 
 class tied_SplineLinear(nn.Module):
@@ -216,6 +216,12 @@ class tied_SplineLinear_FAST(nn.Module):
         
     def normalize(self):
         self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+
+    def finite_difference(self, degree = 1):
+        w_s = self.weight.view(self.out_features, self.degree+1)
+        for i in range(degree):
+            w_s = (w_s.narrow(1, 1, w_s.size(1)-1) - w_s.narrow(1, 0, w_s.size(1)-1))
+        return (w_s ** 2).sum()
         
     def forward(self, x):
         weights =  self.weight.unsqueeze(-2).expand(self.out_features, self.in_features, self.degree + 1) 
