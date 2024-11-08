@@ -419,6 +419,9 @@ class FastKANLayer(nn.Module):
         
     def normalize(self):
         self.spline_linear.normalize()
+
+    def finite_difference(self, degree = 1):
+        return self.spline_linear.finite_difference(degree = degree)
         
     def plot_curve(
         self,
