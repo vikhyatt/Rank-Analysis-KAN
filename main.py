@@ -28,6 +28,8 @@ parser.add_argument('--grid-type', default='uniform', choices=['chebyshev', 'uni
 parser.add_argument('--w-norm', type=float, default=0)
 parser.add_argument('--u-norm', type=float, default=0)
 parser.add_argument('--u-epoch', type=int, default=0)
+parser.add_argument('--fd-degree', type=int, default=0)
+parser.add_argument('--fd-lambda', type=float, default=0.0)
 # parser.add_argument('--precision', type=int, default=16)
 
 parser.add_argument('--patch-size', type=int, default=4)
@@ -83,7 +85,7 @@ if __name__=='__main__':
     with wandb.init(project='mlp_mixer', config=args, name=experiment_name):
         train_dl, test_dl = get_dataloaders(args)
         model = get_model(args)
-        model_configs = f"{args.model}_{args.dataset}_{args.optimizer}_{args.scheduler}_{args.lr}_PS{args.patch_size}_HSize{args.hidden_size}_HC{args.hidden_c}_HS{args.hidden_s}_NL{args.num_layers}_SM{args.skip_min}_PARAMS{sum(p.numel() for p in model.parameters() if p.requires_grad)}_init{args.init}_scale_{args.init_scale}_NG{args.num_grids}_Grid{args.grid_type}{args.grid_min},{args.grid_max}_WD{args.weight_decay}_D{args.denominator}_WN{args.w_norm}"
+        model_configs = f"{args.model}_{args.dataset}_{args.optimizer}_{args.scheduler}_{args.lr}_PS{args.patch_size}_HSize{args.hidden_size}_HC{args.hidden_c}_HS{args.hidden_s}_NL{args.num_layers}_SM{args.skip_min}_PARAMS{sum(p.numel() for p in model.parameters() if p.requires_grad)}_init{args.init}_scale_{args.init_scale}_NG{args.num_grids}_Grid{args.grid_type}{args.grid_min},{args.grid_max}_WD{args.weight_decay}_D{args.denominator}_WN{args.w_norm}_FD{args.fd_degree, args.fd_lambda}"
         args.model_configs = model_configs
         
         print('Number of Learnable Parameters:',sum(p.numel() for p in model.parameters() if p.requires_grad))
