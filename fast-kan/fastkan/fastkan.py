@@ -30,6 +30,7 @@ class SplineLinear(nn.Linear):
         self.init = init
         self.degree = degree
         self.in_features = in_features
+        self.out_features = out_features
         super().__init__(in_features, out_features, bias=False, **kw)
 
     def reset_parameters(self) -> None:
@@ -60,8 +61,11 @@ class SplineLinear(nn.Linear):
         else:
             raise ValueError('Unsupported Initialization entered')
 
-    def finite_difference(self):
-        pass
+    def finite_difference(self, degree = 1):
+        w_s = self.weight.view(self.out_features, self.in_features // self.degree, self.degree)
+        for i in range(degree):
+            w_s = (w_s.narrow(2, 1, w_s.size(2)-1) - w_s.narrow(1, 0, w_s.size(2)-1))
+        return (w_s ** 2).sum()
 
 class tied_SplineLinear(nn.Module):
     def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
