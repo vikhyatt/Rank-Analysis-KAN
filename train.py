@@ -153,7 +153,7 @@ class Trainer(object):
         with torch.no_grad():
             out = self.model(img)
             loss = self.criterion(out, label)
-
+        
         self.epoch_loss += loss * img.size(0)
         self.epoch_corr += out.argmax(dim=-1).eq(label).sum(-1)
 
