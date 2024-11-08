@@ -31,6 +31,8 @@ class Trainer(object):
         self.optim_name = 'none'
         self.min_lr = args.min_lr
         self.amp_train = True
+        self.fd_degree = args.fd_degree
+        self.fd_lambda = args.fd_lambda
         
         if args.optimizer=='sgd':
             self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay, nesterov=args.nesterov)
@@ -76,7 +78,7 @@ class Trainer(object):
 
         self.num_steps = 0
         self.epoch_loss, self.epoch_corr, self.epoch_acc = 0., 0., 0.
-    
+
     def _train_one_step(self, batch):
         self.model.train()
         img, label = batch
@@ -112,7 +114,14 @@ class Trainer(object):
             else:
                 out = self.model(img)
                 loss = self.criterion(out, label)
-
+                
+        if self.fd_degree > 0:
+            if self.amp_train:
+                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                    loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
+            else:
+                loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
+                
         if self.amp_train:
             self.scaler.scale(loss).backward()
             if self.clip_grad:
