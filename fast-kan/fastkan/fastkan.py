@@ -25,9 +25,11 @@ from torch.nn.utils.parametrizations import weight_norm
 from typing import *
 
 class SplineLinear(nn.Linear):
-    def __init__(self, in_features: int, out_features: int, init_scale = [0.1],init = 'default',**kw) -> None:
+    def __init__(self, in_features: int, out_features: int, init_scale = [0.1],init = 'default', degree = 8,**kw) -> None:
         self.init_scale = init_scale
         self.init = init
+        self.degree = degree
+        self.in_features = in_features
         super().__init__(in_features, out_features, bias=False, **kw)
 
     def reset_parameters(self) -> None:
@@ -57,6 +59,9 @@ class SplineLinear(nn.Linear):
             
         else:
             raise ValueError('Unsupported Initialization entered')
+
+    def finite_difference(self):
+        pass
 
 class tied_SplineLinear(nn.Module):
     def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
@@ -343,7 +348,7 @@ class FastKANLayer(nn.Module):
         if use_poly and not use_hankel:
             self.rbf = PolyBasisFunction(degree_poly)
             if not use_same_fn:
-                self.spline_linear = SplineLinear(input_dim * (degree_poly+1), output_dim, spline_weight_init_scale, init = init)
+                self.spline_linear = SplineLinear(input_dim * (degree_poly+1), output_dim, spline_weight_init_scale, init = init, degree = (degree_poly+1))
             else:
                 if self.use_same_weight:
                     self.spline_linear = SplineLinear(degree_poly + 1, output_dim, init_scale = spline_weight_init_scale, init = init)
@@ -355,7 +360,7 @@ class FastKANLayer(nn.Module):
         elif not use_hankel:
             self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             if not use_same_fn:
-                self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init)
+                self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init, degree = num_grids)
             else:
                 if self.use_same_weight:
                     self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale, init = init)
