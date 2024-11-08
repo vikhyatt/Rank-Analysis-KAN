@@ -116,11 +116,18 @@ class Trainer(object):
                 loss = self.criterion(out, label)
                 
         if self.fd_degree > 0:
-            if self.amp_train:
-                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
-                    loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
+            if torch.cuda.device_count() > 1:
+                if self.amp_train:
+                    with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                        loss += self.fd_lambda * self.model.module.finite_difference(degree = self.fd_degree)
+                else:
+                    loss += self.fd_lambda * self.model.module.finite_difference(degree = self.fd_degree)
             else:
-                loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
+                if self.amp_train:
+                    with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                        loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
+                else:
+                    loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
                 
         if self.amp_train:
             self.scaler.scale(loss).backward()
