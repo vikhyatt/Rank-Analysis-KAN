@@ -421,6 +421,13 @@ class KANMixer(nn.Module):
             
         self.patch_emb.normalize()
         self.clf.normalize()
+
+    def finite_difference(self, degree = 1):
+        fd = self.patch_emb.finite_difference(degree = degree) + self.clf.finite_difference(degree = degree)
+        for layer in self.mixer_layers:
+            fd += layer.finite_difference(degree = degree)
+            
+        return fd
         
 class MixerLayer(nn.Module):
     def __init__(self, num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, skip_param = 1, init = 'default', spline_weight_init_scale = 0.1, grid = [-1,1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False):
@@ -435,6 +442,9 @@ class MixerLayer(nn.Module):
     def normalize(self):
         self.kan1.normalize()
         self.kan2.normalize()
+
+    def finite_difference(self, degree = 1):
+        return self.kan1.finite_difference(degree = degree) + self.kan2.finite_difference(degree = degree)
 
 class KAN1(nn.Module):
     def __init__(self, num_patches, hidden_s, hidden_size, drop_p, off_act, use_poly = False, degree_poly = 3,
@@ -455,6 +465,9 @@ class KAN1(nn.Module):
     def normalize(self):
         self.fc1.normalize()
         self.fc2.normalize()
+
+    def finite_difference(self, degree = 1):
+        return self.fc1.finite_difference(degree = degree) + self.fc2.finite_difference(degree = degree)
         
     def forward(self, x):
         #out = self.do1(self.act(self.fc1(self.ln(x))))
@@ -493,6 +506,9 @@ class KAN2(nn.Module):
     def normalize(self):
         self.fc1.normalize()
         self.fc2.normalize()
+
+    def finite_difference(self, degree = 1):
+        return self.fc1.finite_difference(degree = degree) + self.fc2.finite_difference(degree = degree)
         
     def forward(self, x):
         
