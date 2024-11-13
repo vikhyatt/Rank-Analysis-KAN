@@ -329,7 +329,7 @@ class FourierLayer(nn.Module):
         self.PI = torch.acos(torch.zeros(1)).item() * 2
         self.fourier_sin_coeffs = nn.Parameter(torch.randn(output_dim, self.N + 1))
         self.fourier_cos_coeffs = nn.Parameter(torch.randn(output_dim, self.N + 1))
-        self.trig_coeffs = (2 * self.PI * torch.arrange(self.N + 1)) / self.P
+        self.trig_coeffs = (2 * self.PI * torch.arange(self.N + 1)) / self.P
         
     def forward(self, x):
         trig_inp = x.unsqueeze(-1) * self.trig_coeffs.view(*[1] * x.dim(), self.N + 1)
