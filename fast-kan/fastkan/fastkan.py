@@ -319,6 +319,29 @@ class PolyBasisFunction(nn.Module):
     def forward(self, x):
         return torch.clamp(torch.pow(x[...,None], self.degree), min = -2, max = 2)
 
+class FourierLayer(nn.Module):
+    def __init__(self, input_dim, output_dim,N, P):
+        super(FourierLayer, self).__init__()
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.N = N
+        self.P = P
+        self.PI = torch.acos(torch.zeros(1)).item() * 2
+        self.fourier_sin_coeffs = nn.Parameter(torch.randn(output_dim, self.N + 1))
+        self.fourier_cos_coeffs = nn.Parameter(torch.randn(output_dim, self.N + 1))
+        self.trig_coeffs = (2 * self.PI * torch.arrange(self.N + 1)) / self.P
+        
+    def forward(self, x):
+        trig_inp = x.unsqueeze(-1) * self.trig_coeffs.view(*[1] * x.dim(), self.N + 1)
+        if len(trig_inp.shape) == 4:
+            trig_sin = torch.einsum("bhin,on->bhi" , torch.sin(trig_inp), self.fourier_sin_coeffs)
+            trig_cos = torch.einsum("bhin,on->bhi" , torch.cos(trig_inp), self.fourier_cos_coeffs)
+        else:
+            trig_sin = torch.einsum("hin,on->hi" , torch.sin(trig_inp), self.fourier_sin_coeffs)
+            trig_cos = torch.einsum("hin,on->hi" , torch.cos(trig_inp), self.fourier_cos_coeffs)
+        
+        return trig_sin + trig_cos
+
 class FastKANLayer(nn.Module):
     def __init__(
         self,
@@ -342,6 +365,9 @@ class FastKANLayer(nn.Module):
         grid_type = 'uniform',
         denominator = None,
         w_norm = 0,
+        use_fourier = False,
+        N = 5,
+        P = 4,
     ) -> None:
         super().__init__()
         self.input_dim = input_dim
@@ -351,6 +377,8 @@ class FastKANLayer(nn.Module):
         self.use_poly = use_poly
         self.use_softmax_prod = use_softmax_prod
         self.layernorm = None
+        self.use_fourier = use_fourier
+        
         if use_layernorm:
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
             self.layernorm = nn.LayerNorm(input_dim)
@@ -386,7 +414,11 @@ class FastKANLayer(nn.Module):
         self.cpd = use_cpd
         if use_same_fn and self.cpd:
             self.circ = circ_layer(output_dim, spline_weight_init_scale)
-        
+
+        if use_fourier:
+            self.fourier_layer = FourierLayer(input_dim, output_dim, N = N, P = P)
+            
+            
         self.use_base_update = use_base_update
         if use_base_update:
             self.base_activation = base_activation
@@ -394,10 +426,9 @@ class FastKANLayer(nn.Module):
 
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
-            spline_basis = self.rbf(self.layernorm(x))
-        else:
-            spline_basis = self.rbf(x)
-
+            x = self.layernorm(x)
+            
+        spline_basis = self.rbf(x)
         if self.use_same_fn:
             ret = self.spline_linear(spline_basis)
             if self.use_same_weight:
@@ -411,6 +442,9 @@ class FastKANLayer(nn.Module):
                 ret = ret * F.softmax(ret, dim = -1)
         else:
             ret = self.spline_linear(spline_basis.view(*spline_basis.shape[:-2], -1))
+
+        if self.use_fourier:
+            ret = ret + self.fourier_layer(x)
             
         if self.use_base_update:
             base = self.base_linear(self.base_activation(x))
