@@ -334,11 +334,11 @@ class FourierLayer(nn.Module):
     def forward(self, x):
         trig_inp = x.unsqueeze(-1) * self.trig_coeffs.view(*[1] * x.dim(), self.N + 1).to(x.device)
         if len(trig_inp.shape) == 4:
-            trig_sin = torch.einsum("bhin,on->bhi" , torch.sin(trig_inp), self.fourier_sin_coeffs)
-            trig_cos = torch.einsum("bhin,on->bhi" , torch.cos(trig_inp), self.fourier_cos_coeffs)
+            trig_sin = torch.einsum("bhin,on->bho" , torch.sin(trig_inp), self.fourier_sin_coeffs)
+            trig_cos = torch.einsum("bhin,on->bho" , torch.cos(trig_inp), self.fourier_cos_coeffs)
         else:
-            trig_sin = torch.einsum("hin,on->hi" , torch.sin(trig_inp), self.fourier_sin_coeffs)
-            trig_cos = torch.einsum("hin,on->hi" , torch.cos(trig_inp), self.fourier_cos_coeffs)
+            trig_sin = torch.einsum("hin,on->ho" , torch.sin(trig_inp), self.fourier_sin_coeffs)
+            trig_cos = torch.einsum("hin,on->ho" , torch.cos(trig_inp), self.fourier_cos_coeffs)
         
         return trig_sin + trig_cos
 
