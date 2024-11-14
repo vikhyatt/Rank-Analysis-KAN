@@ -387,7 +387,7 @@ class KANMixer(nn.Module):
 
     def forward(self, x):
         x = self.rearr(x)
-        out = self.patch_emb(x, use_layernorm = False)
+        out = self.patch_emb(x,  use_layernorm = False)
 
         #Use Positional Embeddings
         if self.use_pe:
@@ -409,9 +409,9 @@ class KANMixer(nn.Module):
         
         #out = self.mlp_mixer_layers(out)
         out = self.mixer_layers(out)
-        out = self.ln(out)
+        #out = self.ln(out)
         out = out[:, 0] if self.is_cls_token else out.mean(dim=1)
-        out = self.clf(out, use_layernorm = False)
+        out = self.clf(out)#, use_layernorm = False)
         return out
 
 
