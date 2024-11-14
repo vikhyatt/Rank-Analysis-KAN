@@ -378,6 +378,8 @@ class FastKANLayer(nn.Module):
         self.use_softmax_prod = use_softmax_prod
         self.layernorm = None
         self.use_fourier = use_fourier
+        self.grid_min = grid_min
+        self.grid_max = grid_max
         
         if use_layernorm:
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
@@ -426,7 +428,8 @@ class FastKANLayer(nn.Module):
 
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
-            x = self.layernorm(x)
+            #x = self.layernorm(x)
+            x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
             
         spline_basis = self.rbf(x)
         if self.use_same_fn:
@@ -443,6 +446,8 @@ class FastKANLayer(nn.Module):
         else:
             ret = self.spline_linear(spline_basis.view(*spline_basis.shape[:-2], -1))
 
+        ret = ret / self.input_dim
+        
         if self.use_fourier:
             ret = ret + self.fourier_layer(x)
             
