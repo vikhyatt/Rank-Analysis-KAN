@@ -1,11 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=myjob
 #SBATCH --ntasks=1
-#SBATCH --partition=h100
 #SBATCH --cpus-per-task=1
 #SBATCH --gres=gpu:1        # Request 1 GPU
 #SBATCH --mem=40G           # Memory request for the job
-#SBATCH --time=1:00:00     # Set a time limit
+#SBATCH --time=4:00:00     # Set a time limit
 
 # Activate your virtual environment
 source ../venvs/kan/bin/activate
@@ -20,9 +19,10 @@ patch_size=16
 wd=0
 lr=1e-3
 denom=0
-fd_degree=1
-fd_lambda=5e-4
+fd_degree=0
+fd_lambda=0
 dataset='imgnet'
+model='kan_mixer'
 checkpoint_epoch=0
 
 # Now, you can run your Python script
@@ -40,7 +40,7 @@ checkpoint_epoch=0
 #python main.py --init 'default' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'chebyshev' --denominator 1.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 
 #python main.py --init 'default' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'uniform' --denominator -2.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
-python main.py --init 'default' --fd-degree $fd_degree --fd-lambda $fd_lambda --u-norm 0 --u-epoch 1 --w-norm 0 --init-scale 0.11 --lr $lr --weight-decay $wd --num-grids 8 --grid-type 'uniform' --denominator $denom --grid-min -2.0 --grid-max 2.0 --dataset $dataset --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size $patch_size --hidden-c $hidden_c --hidden-s $hidden_s --hidden-size $hidden_size  --batch-size $batch_size --num-layers $num_layers --skip-min 1.0 --checkpoint-epoch $checkpoint_epoch 
+python main.py --init 'default' --fd-degree $fd_degree --fd-lambda $fd_lambda --u-norm 0 --u-epoch 1 --w-norm 0 --init-scale 0.11 --lr $lr --weight-decay $wd --num-grids 8 --grid-type 'uniform' --denominator $denom --grid-min -2.0 --grid-max 2.0 --dataset $dataset --model $model --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0 --patch-size $patch_size --hidden-c $hidden_c --hidden-s $hidden_s --hidden-size $hidden_size  --batch-size $batch_size --num-layers $num_layers --skip-min 1.0 --checkpoint-epoch $checkpoint_epoch 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'uniform' --denominator 0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 5e-5 --num-grids 8 --grid-type 'uniform' --denominator 0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
 #python main.py --init 'zero' --init-scale 0.11  --weight-decay 0 --num-grids 8 --grid-type 'chebyshev' --denominator 1.0 --grid-min -2.0 --grid-max 2.0 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size $eval_batch_size --num-workers $num_workers --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size $batch_size --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0 
