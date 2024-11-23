@@ -107,8 +107,8 @@ def get_dataloaders(args):
     elif args.dataset == "imgnet":
         #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
         #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
-        train_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/train', transform=train_transform)
-        test_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/val', transform=test_transform)
+        train_ds = torchvision.datasets.ImageFolder('../../data/imagenet-100/train', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../../data/imagenet-100/val', transform=test_transform)
         args.num_classes = 100
         
         data_config = resolve_data_config(vars(args), model=model, verbose=utils.is_primary(args))
@@ -165,13 +165,13 @@ def get_dataloaders(args):
             interpolation=args.train_interpolation,
             mean=IMAGENET_DEFAULT_MEAN,
             std=IMAGENET_DEFAULT_STD,
-            num_workers=args.workers,
-            distributed=args.distributed,
+            num_workers=args.num_workers,
+            distributed=False,
             collate_fn=collate_fn,
-            pin_memory=args.pin_mem,
+            pin_memory=True,
             device=args.device,
-            use_multi_epochs_loader=args.use_multi_epochs_loader,
-            worker_seeding=args.worker_seeding,
+            use_multi_epochs_loader=False,
+            worker_seeding='all',
         )
         DEFAULT_CROP_PCT = 0.875
         eval_workers = args.num_workers
@@ -189,9 +189,9 @@ def get_dataloaders(args):
             mean=IMAGENET_DEFAULT_MEAN,
             std=IMAGENET_DEFAULT_STD,
             num_workers=eval_workers,
-            distributed=args.distributed,
+            distributed=False,
             crop_pct=DEFAULT_CROP_PCT,
-            pin_memory=args.pin_mem,
+            pin_memory=True,
             device=args.device,
         )
         return loader_train, loader_eval 
