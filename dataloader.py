@@ -87,6 +87,8 @@ def get_dataloaders(args):
         print('FFCV Data loader complete')
         return train_loader, val_loader
     """
+    
+    
     train_transform, test_transform = get_transform(args)
 
     if args.dataset == "c10":
@@ -109,9 +111,68 @@ def get_dataloaders(args):
         test_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/val', transform=test_transform)
         args.num_classes = 100
         
+        data_config = resolve_data_config(vars(args), model=model, verbose=utils.is_primary(args))
+        
+        if args.no_aug or not train_interpolation:
+            train_interpolation = data_config['interpolation']
+        loader_train = create_loader(
+            train_ds,
+            input_size= data_config['input_size'],
+            batch_size = args.batch_size,
+            is_training=True,
+            use_prefetcher=args.prefetcher,
+            no_aug=args.no_aug,
+            re_prob=args.reprob,
+            re_mode=args.remode,
+            re_count=args.recount,
+            re_split=args.resplit,
+            scale=args.scale,
+            ratio=args.ratio,
+            hflip=args.hflip,
+            vflip=args.vflip,
+            color_jitter=args.color_jitter,
+            auto_augment=args.aa,
+            num_aug_repeats=args.aug_repeats,
+            num_aug_splits=num_aug_splits,
+            interpolation=train_interpolation,
+            mean=data_config['mean'],
+            std=data_config['std'],
+            num_workers=args.workers,
+            distributed=args.distributed,
+            collate_fn=collate_fn,
+            pin_memory=args.pin_mem,
+            device=device,
+            use_multi_epochs_loader=args.use_multi_epochs_loader,
+            worker_seeding=args.worker_seeding,
+        )
+    
+        eval_workers = args.workers
+        if args.distributed and ('tfds' in args.dataset or 'wds' in args.dataset):
+            # FIXME reduces validation padding issues when using TFDS, WDS w/ workers and distributed training
+            eval_workers = min(2, args.workers)
+        loader_eval = create_loader(
+            test_ds,
+            input_size=data_config['input_size'],
+            batch_size=args.validation_batch_size or args.batch_size,
+            is_training=False,
+            use_prefetcher=args.prefetcher,
+            interpolation=data_config['interpolation'],
+            mean=data_config['mean'],
+            std=data_config['std'],
+            num_workers=eval_workers,
+            distributed=args.distributed,
+            crop_pct=data_config['crop_pct'],
+            pin_memory=args.pin_mem,
+            device=device,
+        )
+        return loader_train, loader_eval 
+        
     else:
         raise ValueError(f"No such dataset:{args.dataset}")
 
+
+    
+    
     train_dl = torch.utils.data.DataLoader(train_ds, batch_size=args.batch_size, prefetch_factor=4,shuffle=True, num_workers=args.num_workers, pin_memory=True)
     test_dl = torch.utils.data.DataLoader(test_ds, batch_size=args.eval_batch_size, shuffle=False, prefetch_factor=4,num_workers=args.num_workers, pin_memory=True)
 
