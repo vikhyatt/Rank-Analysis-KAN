@@ -5,6 +5,7 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 from AutoAugment.autoaugment import CIFAR10Policy, SVHNPolicy, ImageNetPolicy
+from timm.data import create_dataset, create_loader, resolve_data_config, Mixup, FastCollateMixup, AugMixDataset
 
 """
 from ffcv.loader import Loader, OrderOption
