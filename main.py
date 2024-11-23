@@ -53,13 +53,67 @@ parser.add_argument('--beta1', type=float, default=0.9)
 parser.add_argument('--beta2', type=float, default=0.99)
 parser.add_argument('--weight-decay', type=float, default=5e-5)
 parser.add_argument('--off-nesterov', action='store_true')
-parser.add_argument('--label-smoothing', type=float, default=0.1)
+#parser.add_argument('--label-smoothing', type=float, default=0.1)
 parser.add_argument('--gamma', type=float, default=0.1)
 parser.add_argument('--warmup-epoch', type=int, default=5)
 parser.add_argument('--autoaugment', action='store_true')
 parser.add_argument('--clip-grad', type=float, default=0, help="0 means disabling clip-grad")
 parser.add_argument('--cutmix-beta', type=float, default=1.0)
 parser.add_argument('--cutmix-prob', type=float, default=0.)
+
+
+parser.add_argument('--no-aug', action='store_true', default=False,
+                   help='Disable all training augmentation, override other train aug args')
+parser.add_argument('--scale', type=float, nargs='+', default=[0.08, 1.0], metavar='PCT',
+                   help='Random resize scale (default: 0.08 1.0)')
+parser.add_argument('--ratio', type=float, nargs='+', default=[3. / 4., 4. / 3.], metavar='RATIO',
+                   help='Random resize aspect ratio (default: 0.75 1.33)')
+parser.add_argument('--hflip', type=float, default=0.5,
+                   help='Horizontal flip training aug probability')
+parser.add_argument('--vflip', type=float, default=0.,
+                   help='Vertical flip training aug probability')
+parser.add_argument('--color-jitter', type=float, default=0.4, metavar='PCT',
+                   help='Color jitter factor (default: 0.4)')
+parser.add_argument('--aa', type=str, default=None, metavar='NAME',
+                   help='Use AutoAugment policy. "v0" or "original". (default: None)'),
+parser.add_argument('--aug-repeats', type=float, default=0,
+                   help='Number of augmentation repetitions (distributed training only) (default: 0)')
+parser.add_argument('--aug-splits', type=int, default=0,
+                   help='Number of augmentation splits (default: 0, valid: 0 or >=2)')
+parser.add_argument('--jsd-loss', action='store_true', default=False,
+                   help='Enable Jensen-Shannon Divergence + CE loss. Use with `--aug-splits`.')
+parser.add_argument('--bce-loss', action='store_true', default=False,
+                   help='Enable BCE loss w/ Mixup/CutMix use.')
+parser.add_argument('--bce-target-thresh', type=float, default=None,
+                   help='Threshold for binarizing softened BCE targets (default: None, disabled)')
+parser.add_argument('--reprob', type=float, default=0., metavar='PCT',
+                   help='Random erase prob (default: 0.)')
+parser.add_argument('--remode', type=str, default='pixel',
+                   help='Random erase mode (default: "pixel")')
+parser.add_argument('--recount', type=int, default=1,
+                   help='Random erase count (default: 1)')
+parser.add_argument('--resplit', action='store_true', default=False,
+                   help='Do not random erase first (clean) augmentation split')
+parser.add_argument('--mixup', type=float, default=0.0,
+                   help='mixup alpha, mixup enabled if > 0. (default: 0.)')
+parser.add_argument('--cutmix', type=float, default=0.0,
+                   help='cutmix alpha, cutmix enabled if > 0. (default: 0.)')
+parser.add_argument('--cutmix-minmax', type=float, nargs='+', default=None,
+                   help='cutmix min/max ratio, overrides alpha and enables cutmix if set (default: None)')
+parser.add_argument('--mixup-prob', type=float, default=1.0,
+                   help='Probability of performing mixup or cutmix when either/both is enabled')
+parser.add_argument('--mixup-switch-prob', type=float, default=0.5,
+                   help='Probability of switching to cutmix when both mixup and cutmix enabled')
+parser.add_argument('--mixup-mode', type=str, default='batch',
+                   help='How to apply mixup/cutmix params. Per "batch", "pair", or "elem"')
+parser.add_argument('--mixup-off-epoch', default=0, type=int, metavar='N',
+                   help='Turn off mixup after this epoch, disabled if 0 (default: 0)')
+parser.add_argument('--smoothing', type=float, default=0.1,
+                   help='Label smoothing (default: 0.1)')
+parser.add_argument('--train-interpolation', type=str, default='random',
+                   help='Training interpolation (random, bilinear, bicubic default: "random")')
+
+
 
 args = parser.parse_args()
 args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
