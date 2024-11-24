@@ -107,95 +107,9 @@ def get_dataloaders(args):
     elif args.dataset == "imgnet":
         #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
         #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
-        train_ds = torchvision.datasets.ImageFolder('../../data/imagenet-100/train', transform=train_transform)
-        test_ds = torchvision.datasets.ImageFolder('../../data/imagenet-100/val', transform=test_transform)
+        train_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/train', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/val', transform=test_transform)
         args.num_classes = 100
-        
-        data_config = resolve_data_config(vars(args), model=model, verbose=utils.is_primary(args))
-        
-        #if args.no_aug or not train_interpolation:
-        #    train_interpolation = data_config['interpolation']
-
-        collate_fn = None
-        mixup_fn = None
-        mixup_active = args.mixup > 0 or args.cutmix > 0. or args.cutmix_minmax is not None
-        if mixup_active:
-            mixup_args = dict(
-                mixup_alpha=args.mixup,
-                cutmix_alpha=args.cutmix,
-                cutmix_minmax=args.cutmix_minmax,
-                prob=args.mixup_prob,
-                switch_prob=args.mixup_switch_prob,
-                mode=args.mixup_mode,
-                label_smoothing=args.smoothing,
-                num_classes=args.num_classes
-            )
-            if args.prefetcher:
-                assert not num_aug_splits  # collate conflict (need to support deinterleaving in collate mixup)
-                collate_fn = FastCollateMixup(**mixup_args)
-            else:
-                mixup_fn = Mixup(**mixup_args)
-        num_aug_splits = 0
-        if args.aug_splits > 0:
-            assert args.aug_splits > 1, 'A split of 1 makes no sense'
-            num_aug_splits = args.aug_splits
-            
-        input_size = (3, 224, 224)
-        IMAGENET_DEFAULT_MEAN = (0.485, 0.456, 0.406)
-        IMAGENET_DEFAULT_STD = (0.229, 0.224, 0.225)
-        loader_train = create_loader(
-            train_ds,
-            input_size= input_size,
-            batch_size = args.batch_size,
-            is_training=True,
-            use_prefetcher=False,
-            no_aug=args.no_aug,
-            re_prob=args.reprob,
-            re_mode=args.remode,
-            re_count=args.recount,
-            re_split=args.resplit,
-            scale=args.scale,
-            ratio=args.ratio,
-            hflip=args.hflip,
-            vflip=args.vflip,
-            color_jitter=args.color_jitter,
-            auto_augment=args.aa,
-            num_aug_repeats=args.aug_repeats,
-            num_aug_splits=num_aug_splits,
-            interpolation='bicubic',
-            mean=IMAGENET_DEFAULT_MEAN,
-            std=IMAGENET_DEFAULT_STD,
-            num_workers=args.num_workers,
-            distributed=False,
-            collate_fn=collate_fn,
-            pin_memory=True,
-            device=args.device,
-            use_multi_epochs_loader=False,
-            worker_seeding='all',
-        )
-        DEFAULT_CROP_PCT = 0.875
-        eval_workers = args.num_workers
-        #if args.distributed and ('tfds' in args.dataset or 'wds' in args.dataset):
-            # FIXME reduces validation padding issues when using TFDS, WDS w/ workers and distributed training
-        #    eval_workers = min(2, args.workers)
-        
-        loader_eval = create_loader(
-            test_ds,
-            input_size=input_size,
-            batch_size=args.eval_batch_size or args.batch_size,
-            is_training=False,
-            use_prefetcher=False,
-            interpolation = 'bicubic',
-            mean=IMAGENET_DEFAULT_MEAN,
-            std=IMAGENET_DEFAULT_STD,
-            num_workers=eval_workers,
-            distributed=False,
-            crop_pct=DEFAULT_CROP_PCT,
-            pin_memory=True,
-            device=args.device,
-        )
-        return loader_train, loader_eval 
-        
     else:
         raise ValueError(f"No such dataset:{args.dataset}")
 
