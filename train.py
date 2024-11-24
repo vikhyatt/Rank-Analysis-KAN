@@ -135,7 +135,7 @@ class Trainer(object):
                 nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_grad)
             self.optimizer.step()
 
-        acc = out.argmax(dim=-1).eq(label).sum(-1)/img.size(0)
+        acc = out.argmax(dim=-1).eq(label.argmax(dim=-1)).sum(-1)/img.size(0)
         wandb.log({
             'loss':loss,
             'acc':acc
@@ -153,7 +153,7 @@ class Trainer(object):
             loss = self.criterion(out, label)
         
         self.epoch_loss += loss * img.size(0)
-        self.epoch_corr += out.argmax(dim=-1).eq(label).sum(-1)
+        self.epoch_corr += out.argmax(dim=-1).eq(label.argmax(dim=-1)).sum(-1)
 
 
     def compute_svd(self, epoch, test_dl, init = 'default'):
