@@ -157,8 +157,8 @@ def get_transform(args):
             print(f"No AutoAugment for {args.dataset}")   
         
     if args.dataset=="imgnet":
-        train_transform_list = [transforms.Resize(args.size)] + train_transform_list
-        train_transform_list = train_transform_list + [transforms.RandAugment(num_ops= args.rand_augment_ops, magnitude=args.rand_augment_mag)]
+        #train_transform_list = [transforms.Resize(args.size)] + train_transform_list
+        train_transform_list = [transforms.RandomResizedCrop(args.size)] + [transforms.RandAugment(num_ops= args.rand_augment_ops, magnitude=args.rand_augment_mag)]
         
     train_transform = transforms.Compose(
         train_transform_list+[
