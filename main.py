@@ -61,7 +61,7 @@ parser.add_argument('--clip-grad', type=float, default=0, help="0 means disablin
 parser.add_argument('--cutmix-beta', type=float, default=1.0)
 parser.add_argument('--cutmix-prob', type=float, default=0.)
 parser.add_argument('--mixup-prob', type=float, default=0.)
-parser.add_argument('--mixup-prob', type=float, default=0.)
+parser.add_argument('--mixup-beta', type=float, default=1.0)
 parser.add_argument('--rand-augment-mag', type=int, default=15)
 parser.add_argument('--rand-augment-ops', type=int, default=2)
 
