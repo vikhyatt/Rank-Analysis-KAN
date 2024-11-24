@@ -95,9 +95,39 @@ class Trainer(object):
         
         self.optimizer.zero_grad()
         r = np.random.rand(1)
+        """
         if self.mixup_beta > 0 and r < self.mixup_prob:
             img, label  = self.mixup(img, label)
-            
+        """
+
+        if self.cutmix_beta > 0 and r < self.cutmix_prob:
+            # generate mixed sample
+            lam = np.random.beta(self.cutmix_beta, self.cutmix_beta)
+            rand_index = torch.randperm(img.size(0)).to(self.device)
+            target_a = label
+            target_b = label[rand_index]
+            bbx1, bby1, bbx2, bby2 = rand_bbox(img.size(), lam)
+            img[:, :, bbx1:bbx2, bby1:bby2] = img[rand_index, :, bbx1:bbx2, bby1:bby2]
+            # adjust lambda to exactly match pixel ratio
+            lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (img.size()[-1] * img.size()[-2]))
+            # compute output
+            if self.amp_train:
+                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                    out = self.model(img)
+                    loss = self.criterion(out, target_a) * lam + self.criterion(out, target_b) * (1. - lam)
+            else:
+                out = self.model(img)
+                loss = self.criterion(out, label)
+        else:
+            # compute output
+            if self.amp_train:
+                with torch.cuda.amp.autocast():
+                    out = self.model(img)
+                    loss = self.criterion(out, label)
+            else:
+                out = self.model(img)
+                loss = self.criterion(out, label)
+        """
         if self.amp_train:
             with torch.amp.autocast('cuda',dtype = torch.bfloat16):
                 out = self.model(img)
@@ -105,7 +135,7 @@ class Trainer(object):
         else:
             out = self.model(img)
             loss = self.criterion(out, label) 
-                
+        """       
         if self.fd_degree > 0:
             if torch.cuda.device_count() > 1:
                 if self.amp_train:
@@ -135,7 +165,7 @@ class Trainer(object):
                 nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_grad)
             self.optimizer.step()
 
-        acc = out.argmax(dim=-1).eq(label.argmax(dim=-1)).sum(-1)/img.size(0)
+        acc = out.argmax(dim=-1).eq(label).sum(-1)/img.size(0)
         wandb.log({
             'loss':loss,
             'acc':acc
@@ -153,7 +183,7 @@ class Trainer(object):
             loss = self.criterion(out, label)
         
         self.epoch_loss += loss * img.size(0)
-        self.epoch_corr += out.argmax(dim=-1).eq(label.argmax(dim=-1)).sum(-1)
+        self.epoch_corr += out.argmax(dim=-1).eq(label).sum(-1)
 
 
     def compute_svd(self, epoch, test_dl, init = 'default'):
