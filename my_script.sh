@@ -11,12 +11,12 @@ source ../venvs/kan/bin/activate
 num_workers=12
 eval_batch_size=512
 batch_size=256
-num_layers=6
-hidden_c=1024
-hidden_s=128
-hidden_size=256
+num_layers=9
+hidden_c=900
+hidden_s=112
+hidden_size=225
 patch_size=16
-wd=0
+wd=5e-5
 lr=1e-3
 denom=0
 fd_degree=0
@@ -27,7 +27,7 @@ num_grids=8
 checkpoint_epoch=0
 epochs=600
 cutmix_prob=0.5
-mixup_prob=0.5
+
 
 # Now, you can run your Python script
 #python main.py --init 'uniform' --init-scale 0.02 --dataset imgnet --model kan_mixer --autoaugment --epochs 600 --eval-batch-size 128 --num-workers 12 --cutmix-prob 0.5 --patch-size 8 --hidden-c 512 --hidden-s 64 --hidden-size 128  --batch-size 256 --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0
