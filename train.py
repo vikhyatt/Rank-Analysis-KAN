@@ -13,6 +13,7 @@ from utils import rand_bbox
 import matplotlib.pyplot as plt
 from torch.linalg import svdvals
 import copy
+from torchvision.transforms import v2
 
 
 class Trainer(object):
@@ -24,6 +25,10 @@ class Trainer(object):
         self.clip_grad = args.clip_grad
         self.cutmix_beta = args.cutmix_beta
         self.cutmix_prob = args.cutmix_prob
+        
+        self.mixup_prob = args.mixup_prob
+        self.mixup_beta = args.mixup_beta
+        
         self.num_workers = args.num_workers
         self.u_norm = args.u_norm
         self.u_epoch = args.u_epoch
@@ -33,6 +38,9 @@ class Trainer(object):
         self.amp_train = True
         self.fd_degree = args.fd_degree
         self.fd_lambda = args.fd_lambda
+
+        self.cutmix = v2.CutMix(alpha = self.cutmix_beta, num_classes=args.num_classes)
+        self.mixup = v2.MixUp(alpha = self.mixup_beta, num_classes=args.num_classes)
         
         if args.optimizer=='sgd':
             self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay, nesterov=args.nesterov)
@@ -87,33 +95,16 @@ class Trainer(object):
         
         self.optimizer.zero_grad()
         r = np.random.rand(1)
-        if self.cutmix_beta > 0 and r < self.cutmix_prob:
-            # generate mixed sample
-            lam = np.random.beta(self.cutmix_beta, self.cutmix_beta)
-            rand_index = torch.randperm(img.size(0)).to(self.device)
-            target_a = label
-            target_b = label[rand_index]
-            bbx1, bby1, bbx2, bby2 = rand_bbox(img.size(), lam)
-            img[:, :, bbx1:bbx2, bby1:bby2] = img[rand_index, :, bbx1:bbx2, bby1:bby2]
-            # adjust lambda to exactly match pixel ratio
-            lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (img.size()[-1] * img.size()[-2]))
-            # compute output
-            if self.amp_train:
-                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
-                    out = self.model(img)
-                    loss = self.criterion(out, target_a) * lam + self.criterion(out, target_b) * (1. - lam)
-            else:
+        if self.mixup_beta > 0 and r < self.mixup_prob:
+            img, label  = self.mixup(img, label)
+            
+        if self.amp_train:
+            with torch.amp.autocast('cuda',dtype = torch.bfloat16):
                 out = self.model(img)
-                loss = self.criterion(out, target_a) * lam + self.criterion(out, target_b) * (1. - lam)
+                loss = self.criterion(out, label) 
         else:
-            # compute output
-            if self.amp_train:
-                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
-                    out = self.model(img)
-                    loss = self.criterion(out, label)
-            else:
-                out = self.model(img)
-                loss = self.criterion(out, label)
+            out = self.model(img)
+            loss = self.criterion(out, label) 
                 
         if self.fd_degree > 0:
             if torch.cuda.device_count() > 1:
