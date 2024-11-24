@@ -121,7 +121,7 @@ class Trainer(object):
         else:
             # compute output
             if self.amp_train:
-                with torch.cuda.amp.autocast():
+                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
                     out = self.model(img)
                     loss = self.criterion(out, label)
             else:
