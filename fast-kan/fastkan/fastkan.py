@@ -429,7 +429,8 @@ class FastKANLayer(nn.Module):
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
             #x = self.layernorm(x)
-            x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
+            #x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
+            pass
             
         spline_basis = self.rbf(x)
         if self.use_same_fn:
