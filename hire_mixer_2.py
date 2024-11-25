@@ -29,17 +29,19 @@ class Mlp(nn.Module):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
-        self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
+        #self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
+        self.fc1 = nn.Linear(in_features, hidden_features)
         self.act = nn.GELU()
-        self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
+        #self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
+        self.fc2 = nn.Linear(hidden_features, out_features)
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
-        x = self.fc1(x)
+        x = self.fc1(x.permute(0,3,2,1))
         x = self.act(x)
-        x = self.drop(x)
-        x = self.fc2(x)
-        x = self.drop(x)
+        x = self.drop(x.permute(0,3,2,1))
+        x = self.fc2(x.permute(0,3,2,1))
+        x = self.drop(x.permute(0,3,2,1))
         return x
 
 
@@ -58,19 +60,22 @@ class HireMLP(nn.Module):
         print('pixel: {} pad mode: {} step: {} pad mode: {}'.format(
               pixel, pixel_pad_mode, step, step_pad_mode))
         
-        self.mlp_h1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
+        #self.mlp_h1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
+        self.mlp_h1 = nn.Linear(dim*pixel, dim//2, bias=False)
         self.mlp_h1_norm = nn.BatchNorm2d(dim//2)
-        self.mlp_h2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
-        self.mlp_w1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
+        #self.mlp_h2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
+        self.mlp_h2 = nn.Linear(dim//2, dim*pixel, bias=True)
+        #self.mlp_w1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
+        self.mlp_w1 = nn.Linear(dim*pixel, dim//2, bias=False)
         self.mlp_w1_norm = nn.BatchNorm2d(dim//2)
-        self.mlp_w2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
-        self.mlp_c = nn.Conv2d(dim, dim, 1, bias=True)
-        
+        #self.mlp_w2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
+        self.mlp_w2 = nn.Linear(dim//2, dim*pixel, bias=True)
+        #self.mlp_c = nn.Conv2d(dim, dim, 1, bias=True)
+        self.mlp_c = nn.Linear(dim, dim, bias=True)
         self.act = nn.ReLU()
-
         self.reweight = Mlp(dim, dim // 4, dim * 3)
-
-        self.proj = nn.Conv2d(dim, dim, 1)
+        #self.proj = nn.Conv2d(dim, dim, 1)
+        self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
 
     def forward(self, x):
@@ -113,15 +118,15 @@ class HireMLP(nn.Module):
         h = h.reshape(B, C, (H + pad_h) // self.pixel, self.pixel, W).permute(0, 1, 3, 2, 4).reshape(B, C*self.pixel, (H + pad_h) // self.pixel, W)
         w = w.reshape(B, C, H, (W + pad_w) // self.pixel, self.pixel).permute(0, 1, 4, 2, 3).reshape(B, C*self.pixel, H, (W + pad_w) // self.pixel)
           
-        h = self.mlp_h1(h)
-        h = self.mlp_h1_norm(h)
+        h = self.mlp_h1(h.permute(0,3,2,1))
+        h = self.mlp_h1_norm(h.permute(0,3,2,1))
         h = self.act(h)
-        h = self.mlp_h2(h)
+        h = self.mlp_h2(h.permute(0,3,2,1)).permute(0,3,2,1)
         
-        w = self.mlp_w1(w)
-        w = self.mlp_w1_norm(w)
+        w = self.mlp_w1(w.permute(0,3,2,1))
+        w = self.mlp_w1_norm(w.permute(0,3,2,1))
         w = self.act(w)
-        w = self.mlp_w2(w)
+        w = self.mlp_w2(w.permute(0,3,2,1)).permute(0,3,2,1)
         
         h = h.reshape(B, C, self.pixel, (H + pad_h) // self.pixel, W).permute(0, 1, 3, 2, 4).reshape(B, C, H + pad_h, W)
         w = w.reshape(B, C, self.pixel, H, (W + pad_w) // self.pixel).permute(0, 1, 3, 4, 2).reshape(B, C, H, W + pad_w)
@@ -138,14 +143,14 @@ class HireMLP(nn.Module):
             # h = torch.narrow(h, 2, self.step, H)
             # w = torch.narrow(w, 3, self.step, W)
 
-        c = self.mlp_c(x)
+        c = self.mlp_c(x.permute(0,3,2,1)).permute(0,3,2,1)
 
         a = (h + w + c).flatten(2).mean(2).unsqueeze(2).unsqueeze(2)
         a = self.reweight(a).reshape(B, C, 3).permute(2, 0, 1).softmax(dim=0).unsqueeze(3).unsqueeze(3)
 
         x = h * a[0] + w * a[1] + c * a[2]
         
-        x = self.proj(x)
+        x = self.proj(x.permute(0,3,2,1)).permute(0,3,2,1)
         x = self.proj_drop(x)
 
         return x
