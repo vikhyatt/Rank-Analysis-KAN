@@ -33,10 +33,10 @@ class Mlp(nn.Module):
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
         #self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
-        self.fc1 = nn.Linear(in_features, hidden_features)
+        self.fc1 = KANLinear(in_features, hidden_features)
         self.act = nn.GELU()
         #self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
-        self.fc2 = nn.Linear(hidden_features, out_features)
+        self.fc2 = KANLinear(hidden_features, out_features)
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
@@ -64,17 +64,17 @@ class HireMLP(nn.Module):
               pixel, pixel_pad_mode, step, step_pad_mode))
         
         #self.mlp_h1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
-        self.mlp_h1 = nn.Linear(dim*pixel, dim//2, bias=False)
+        self.mlp_h1 = KANLinear(dim*pixel, dim//2, bias=False)
         self.mlp_h1_norm = nn.BatchNorm2d(dim//2)
         #self.mlp_h2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
-        self.mlp_h2 = nn.Linear(dim//2, dim*pixel, bias=True)
+        self.mlp_h2 = KANLinear(dim//2, dim*pixel, bias=True)
         #self.mlp_w1 = nn.Conv2d(dim*pixel, dim//2, 1, bias=False)
-        self.mlp_w1 = nn.Linear(dim*pixel, dim//2, bias=False)
+        self.mlp_w1 = KANLinear(dim*pixel, dim//2, bias=False)
         self.mlp_w1_norm = nn.BatchNorm2d(dim//2)
         #self.mlp_w2 = nn.Conv2d(dim//2, dim*pixel, 1, bias=True)
-        self.mlp_w2 = nn.Linear(dim//2, dim*pixel, bias=True)
+        self.mlp_w2 = KANLinear(dim//2, dim*pixel, bias=True)
         #self.mlp_c = nn.Conv2d(dim, dim, 1, bias=True)
-        self.mlp_c = nn.Linear(dim, dim, bias=True)
+        self.mlp_c = KANLinear(dim, dim, bias=True)
         self.act = nn.ReLU()
         self.reweight = Mlp(dim, dim // 4, dim * 3)
         #self.proj = nn.Conv2d(dim, dim, 1)
