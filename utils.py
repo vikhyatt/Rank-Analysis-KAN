@@ -129,7 +129,7 @@ def get_model(args):
     elif args.model=='hire_mixer':
         from hire_mixer import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-        def hire_mlp_tiny(pretrained=False, **kwargs):
+        def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
             layers = [2, 2, 4, 2]
             mlp_ratios = [4, 4, 4, 4]
             embed_dims = [64, 128, 320, 512]
@@ -144,14 +144,14 @@ def get_model(args):
                 step_pad_mode=step_pad_mode, pixel_pad_mode=pixel_pad_mode, **kwargs)
             model.default_cfg = {
                     'url': '',
-                    'num_classes': 100, 'input_size': (3, 224, 224), 'pool_size': None,
+                    'num_classes': classes, 'input_size': (3, size, size), 'pool_size': None,
                     'crop_pct': 0.9, 'interpolation': 'bicubic',
                     'mean': IMAGENET_DEFAULT_MEAN, 'std': IMAGENET_DEFAULT_STD, 'classifier': 'head',
                     **kwargs
                     }
             return model
 
-        return hire_mlp_tiny()
+        return hire_mlp_tiny(args.size, args.num_classes)
 
     else:
         raise ValueError(f"No such model: {args.model}")
