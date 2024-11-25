@@ -12,7 +12,7 @@ import shlex
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True, choices=['c10', 'c100', 'svhn', 'imgnet'])
-parser.add_argument('--model', required=True, choices=['mlp_mixer', 'kan_mixer', 'effkan_mixer','fasterkan_mixer','kat_mixer'])
+parser.add_argument('--model', required=True, choices=['mlp_mixer', 'kan_mixer', 'effkan_mixer','fasterkan_mixer','kat_mixer', 'hire_mixer'])
 parser.add_argument('--batch-size', type=int, default=128)
 parser.add_argument('--eval-batch-size', type=int, default=1024)
 parser.add_argument('--num-workers', type=int, default=4)
