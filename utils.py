@@ -125,6 +125,34 @@ def get_model(args):
             enable_standalone_scale_spline = False,
             use_pe = True,
         )
+        
+    elif args.model=='hire_mixer':
+        from hire_mixer import HireMLPNet
+        from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+        def hire_mlp_tiny(pretrained=False, **kwargs):
+            layers = [2, 2, 4, 2]
+            mlp_ratios = [4, 4, 4, 4]
+            embed_dims = [64, 128, 320, 512]
+            pixel = [4, 3, 3, 2]
+            step_stride = [2, 2, 3, 2]
+            step_dilation = [2, 2, 1, 1]
+            step_pad_mode = 'c'
+            pixel_pad_mode = 'c'
+            model = HireMLPNet(
+                layers, embed_dims=embed_dims, patch_size=7, mlp_ratios=mlp_ratios, pixel=pixel,
+                step_stride=step_stride, step_dilation=step_dilation,
+                step_pad_mode=step_pad_mode, pixel_pad_mode=pixel_pad_mode, **kwargs)
+            model.default_cfg = {
+                    'url': '',
+                    'num_classes': 100, 'input_size': (3, 224, 224), 'pool_size': None,
+                    'crop_pct': 0.9, 'interpolation': 'bicubic',
+                    'mean': IMAGENET_DEFAULT_MEAN, 'std': IMAGENET_DEFAULT_STD, 'classifier': 'head',
+                    **kwargs
+                    }
+            return model
+
+        return hire_mlp_tiny()
+
     else:
         raise ValueError(f"No such model: {args.model}")
     if torch.cuda.device_count() > 1:
