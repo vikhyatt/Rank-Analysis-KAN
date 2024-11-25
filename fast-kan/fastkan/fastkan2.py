@@ -275,7 +275,7 @@ class circ_layer(nn.Module):
         return out
     
 
-class RadialBasisFunction(nn.Module):
+class RadialBasisFunction2(nn.Module):
     def __init__(
         self,
         grid_min: float = -2.,
@@ -304,7 +304,18 @@ class RadialBasisFunction(nn.Module):
         else:
             self.denominator = denominator
 
-    def forward(self, x):
+    def forward(self, x):        
+        x_flat = x.view(-1)
+
+        # Define the quantile grid
+        quantile_grid = torch.cat([
+            torch.tensor([0.0]),        # Minimum (0th quantile)
+            torch.linspace(0.25, 0.75, self.num_grids - 2),  # 6 grid points between 25th and 75th quantiles
+            torch.tensor([1.0])         # Maximum (100th quantile)
+        ])
+        # Compute the quantiles
+        grid = torch.quantile(x_flat, quantile_grid)
+        self.grid = torch.nn.Parameter(grid, requires_grad=False)
         return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
 
 class PolyBasisFunction(nn.Module):
@@ -342,7 +353,7 @@ class FourierLayer(nn.Module):
         
         return trig_sin + trig_cos
 
-class FastKANLayer(nn.Module):
+class FastKANLayer2(nn.Module):
     def __init__(
         self,
         input_dim: int,
@@ -398,7 +409,7 @@ class FastKANLayer(nn.Module):
                 
 
         elif not use_hankel:
-            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            self.rbf = RadialBasisFunction2(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             if not use_same_fn:
                 self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init, degree = num_grids)
             else:
@@ -409,7 +420,7 @@ class FastKANLayer(nn.Module):
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
                     
         else:
-            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            self.rbf = RadialBasisFunction2(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
             
