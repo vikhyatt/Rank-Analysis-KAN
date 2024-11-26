@@ -363,7 +363,7 @@ class FastKANLayer(nn.Module):
         use_softmax_prod = False,
         init = 'default',
         grid_type = 'uniform',
-        denominator = None,
+        denominator = 0,
         w_norm = 0,
         use_fourier = False,
         N = 5,
@@ -379,7 +379,9 @@ class FastKANLayer(nn.Module):
         self.layernorm = None
         self.use_fourier = use_fourier
         self.grid_min = grid_min
-        self.grid_max = grid_max
+        self.grid_min = grid_max
+        self.num_grids = num_grids
+        self.denominator = denominator or (grid_max - grid_min)/(num_grids - 1)
         
         if use_layernorm:
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
@@ -462,6 +464,24 @@ class FastKANLayer(nn.Module):
 
     def finite_difference(self, degree = 1):
         return self.spline_linear.finite_difference(degree = degree)
+
+    def grid_extension(self, increment = 1):
+        def temp_rbf(x, temp_grid):
+            return torch.exp(-((x[..., None] - temp_grid) / self.denominator) ** 2)
+
+        curr_grid = self.rbf.grid
+        new_grid = torch.linspace(self.grid_min,self.grid_max, curr_grid.shape[0] + increment)
+        inputs = torch.linspace(self.grid_min,self.grid_max, 1000)
+        coeffs  = self.spline_linear.weight.data
+        coeffs = coeffs.reshape(self.output_dim, self.input_dim, self.num_grids)
+        old_b = temp_rbf(inputs, curr_grid) 
+        old_splines = torch.einsum('ijk,hk->ijh', coeffs, old_b).unsqueeze(-1)
+        new_b = temp_rbf(inputs, new_grid)
+        new_b = new_b.repeat(output_dim, input_dim, 1,1)
+        new_coeffs = torch.linalg.lstsq(new_b, old_splines).solution.squeeze(-1)
+        new_coeffs = new_coeffs.reshape(output_dim, input_dim * new_grid.shape[0])
+        spline_linear.weight.data = new_coeffs.to(spline_linear.weight.data.device)
+        self.num_grids += increment
         
     def plot_curve(
         self,
