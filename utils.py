@@ -129,10 +129,13 @@ def get_model(args):
     elif args.model=='hire_mixer':
         from hire_mixer import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-        def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
-            layers = [2, 2, 4, 2]
-            mlp_ratios = [4, 4, 4, 4]
-            embed_dims = [64, 128, 320, 512]
+        def hire_mlp_tiny(pretrained=False, **kwargs):
+            #layers = [2, 2, 4, 2]
+            layers = [2,4,2]
+            #mlp_ratios = [4, 4, 4, 4]
+            mlp_ratios = [4,4,4]
+            #embed_dims = [64, 128, 320, 512]
+            embed_dims = [64,128, 320]
             pixel = [4, 3, 3, 2]
             step_stride = [2, 2, 3, 2]
             step_dilation = [2, 2, 1, 1]
@@ -144,22 +147,23 @@ def get_model(args):
                 step_pad_mode=step_pad_mode, pixel_pad_mode=pixel_pad_mode, **kwargs)
             model.default_cfg = {
                     'url': '',
-                    'num_classes': classes, 'input_size': (3, size, size), 'pool_size': None,
+                    'num_classes': 100, 'input_size': (3, 224, 224), 'pool_size': None,
                     'crop_pct': 0.9, 'interpolation': 'bicubic',
                     'mean': IMAGENET_DEFAULT_MEAN, 'std': IMAGENET_DEFAULT_STD, 'classifier': 'head',
                     **kwargs
                     }
             return model
 
-        model =  hire_mlp_tiny(args.size, args.num_classes)
+        model =  hire_mlp_tiny()
 
-    elif args.model=='hire_mixer_2':
+
+     elif args.model=='hire_mixer_2':
         from hire_mixer_2 import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
         def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
-            layers = [2, 2, 4, 2]
-            mlp_ratios = [4, 4, 4, 4]
-            embed_dims = [64, 128, 320, 512]
+            layers = [2, 4,2]
+            mlp_ratios = [4, 4, 4]
+            embed_dims = [64, 128, 320]
             pixel = [4, 3, 3, 2]
             step_stride = [2, 2, 3, 2]
             step_dilation = [2, 2, 1, 1]
@@ -184,9 +188,9 @@ def get_model(args):
         from hire_kan import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
         def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
-            layers = [2, 2, 4, 2]
-            mlp_ratios = [4, 4, 4, 4]
-            embed_dims = [64, 128, 320, 512]
+            layers = [ 1, 1]
+            mlp_ratios = [3, 3]
+            embed_dims = [ 150, 150]
             pixel = [4, 3, 3, 2]
             step_stride = [2, 2, 3, 2]
             step_dilation = [2, 2, 1, 1]
