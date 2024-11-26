@@ -306,7 +306,12 @@ class Trainer(object):
             #        os.remove(prev_PATH)
 
              #   self.compute_svd(epoch, test_dl, init = init)
-            
+
+            if epoch == 1:
+                increment = 1
+                self.model.grid_extension(increment = increment)
+                print(f"Grid successfully extended by {increment}")
+                print(f"Parameters after update: {}")
                 
             for batch in train_dl:
                 self._train_one_step(batch)
