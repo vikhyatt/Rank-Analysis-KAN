@@ -480,7 +480,7 @@ class FastKANLayer(nn.Module):
         new_b = new_b.repeat(output_dim, input_dim, 1,1)
         new_coeffs = torch.linalg.lstsq(new_b, old_splines).solution.squeeze(-1)
         new_coeffs = new_coeffs.reshape(output_dim, input_dim * new_grid.shape[0])
-        spline_linear.weight.data = new_coeffs.to(spline_linear.weight.data.device)
+        self.spline_linear.weight.data = new_coeffs.to(self.spline_linear.weight.data.device)
         self.num_grids += increment
         
     def plot_curve(
