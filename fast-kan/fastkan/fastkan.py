@@ -472,7 +472,8 @@ class FastKANLayer(nn.Module):
         curr_grid = self.rbf.grid
         new_grid = torch.linspace(self.grid_min,self.grid_max, curr_grid.shape[0] + increment)
         inputs = torch.linspace(self.grid_min,self.grid_max, 1000)
-        coeffs  = self.spline_linear.weight.data
+        coeffs  = self.spline_linear.weight.data.clone()
+        coeffs = coeffs.detach().cpu()
         coeffs = coeffs.reshape(self.output_dim, self.input_dim, self.num_grids)
         old_b = temp_rbf(inputs, curr_grid) 
         old_splines = torch.einsum('ijk,hk->ijh', coeffs, old_b).unsqueeze(-1)
