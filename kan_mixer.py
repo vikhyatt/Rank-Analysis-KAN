@@ -414,6 +414,12 @@ class KANMixer(nn.Module):
         out = self.clf(out)#, use_layernorm = False)
         return out
 
+    def grid_extension(self, increment = 1):
+        for layer in in self.mixer_layers:
+            layer.grid_extension(increment = increment)
+
+        self.patch_emb.grid_extension(increment = increment)
+        self.clf.grid_extension(increment = increment)
 
     def normalize(self):
         for layer in self.mixer_layers:
@@ -461,7 +467,11 @@ class KAN1(nn.Module):
         
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
-                      
+
+    def grid_extension(self, increment = 1):
+        self.fc1.grid_extension(increment=increment)
+        self.fc2.grid_extension(increment=increment)
+        
     def normalize(self):
         self.fc1.normalize()
         self.fc2.normalize()
@@ -503,6 +513,10 @@ class KAN2(nn.Module):
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
 
+    def grid_extension(self, increment = 1):
+        self.fc1.grid_extension(increment=increment)
+        self.fc2.grid_extension(increment=increment)
+        
     def normalize(self):
         self.fc1.normalize()
         self.fc2.normalize()
