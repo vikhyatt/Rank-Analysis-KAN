@@ -299,7 +299,11 @@ class RadialBasisFunction(nn.Module):
             self.denominator = (grid_max - grid_min) / (num_grids - 1)
         elif denominator < 0:
             self.denominator = torch.abs(denominator*self.grid).clone()
-            self.denominator = torch.clamp(self.denominator, min = 0.75)
+            self.denominator = torch.clamp(self.denominator, min = 0.5)
+            self.denominator = torch.nn.Parameter(self.denominator, requires_grad=False)
+        elif denominator == 2.22:
+            self.denominator = grid_max - torch.abs(self.grid).clone()
+            self.denominator = torch.clamp(self.denominator, min = 0.5)
             self.denominator = torch.nn.Parameter(self.denominator, requires_grad=False)
         else:
             self.denominator = denominator
@@ -353,7 +357,7 @@ class FastKANLayer(nn.Module):
         use_base_update: bool = True,
         use_layernorm: bool = True,
         base_activation = F.silu,
-        spline_weight_init_scale: float = 0.1,
+        spline_weight_init_scale = [0.1],
         use_poly = False,
         degree_poly = 3,
         use_same_fn = False,
@@ -379,10 +383,18 @@ class FastKANLayer(nn.Module):
         self.layernorm = None
         self.use_fourier = use_fourier
         self.grid_min = grid_min
-        self.grid_min = grid_max
+        self.grid_max = grid_max
         self.num_grids = num_grids
         self.denominator = denominator or (grid_max - grid_min)/(num_grids - 1)
+        self.hadmard = False
+        self.parallel = False
+        if self.hadmard:
+            self.w1 = nn.Parameter(torch.tensor(1.0)) 
+            self.w2  = nn.Parameter(torch.tensor(1.0))
+            #nn.init.trunc_normal_(self.w1, mean=0, std=spline_weight_init_scale[0])
+            #nn.init.trunc_normal_(self.w2, mean=0, std=spline_weight_init_scale[0])
         
+
         if use_layernorm:
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
             self.layernorm = nn.LayerNorm(input_dim)
@@ -414,7 +426,13 @@ class FastKANLayer(nn.Module):
             self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
-            
+        if self.parallel:
+            self.spline_linear1 = tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                                                       degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
+            self.spline_linear2 = tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                                                       degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
+            del self.spline_linear
+
         self.cpd = use_cpd
         if use_same_fn and self.cpd:
             self.circ = circ_layer(output_dim, spline_weight_init_scale)
@@ -430,11 +448,18 @@ class FastKANLayer(nn.Module):
 
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
-            #x = self.layernorm(x)
+            spline_basis = self.rbf(self.layernorm(x))
             #x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
-            pass
+            #pass
             
-        spline_basis = self.rbf(x)
+        else:
+            spline_basis = self.rbf(x)
+
+        if self.parallel:
+            ret1 = self.spline_linear1(spline_basis)
+            ret2 = self.spline_linear2(spline_basis)
+            return  ret1 * ret2
+
         if self.use_same_fn:
             ret = self.spline_linear(spline_basis)
             if self.use_same_weight:
@@ -447,16 +472,20 @@ class FastKANLayer(nn.Module):
             if self.use_softmax_prod:
                 ret = ret * F.softmax(ret, dim = -1)
         else:
-            ret = self.spline_linear(spline_basis.view(*spline_basis.shape[:-2], -1))
+            ret = self.spline_linear(spline_basis.reshape(*spline_basis.shape[:-2], -1))
 
-        ret = ret / self.input_dim
-        
+        #ret = ret / self.input_dim
+        #print(ret.requires_grad)
         if self.use_fourier:
             ret = ret + self.fourier_layer(x)
-            
+        
+        if self.hadmard:
+            ret = self.w1 * ret + self.w2 * (ret**2)
+
         if self.use_base_update:
             base = self.base_linear(self.base_activation(x))
             ret = ret + base
+       # print(self.input_dim, self.output_dim, ret.requires_grad)
         return ret
         
     def normalize(self):
@@ -469,21 +498,27 @@ class FastKANLayer(nn.Module):
         def temp_rbf(x, temp_grid):
             return torch.exp(-((x[..., None] - temp_grid) / self.denominator) ** 2)
 
-        curr_grid = self.rbf.grid
+        curr_grid = self.rbf.grid.detach().cpu()
         new_grid = torch.linspace(self.grid_min,self.grid_max, curr_grid.shape[0] + increment)
         inputs = torch.linspace(self.grid_min,self.grid_max, 1000)
+        final_device = self.spline_linear.weight.data.device
+        #print(self.spline_linear.device_ids)
         coeffs  = self.spline_linear.weight.data.clone()
         coeffs = coeffs.detach().cpu()
         coeffs = coeffs.reshape(self.output_dim, self.input_dim, self.num_grids)
         old_b = temp_rbf(inputs, curr_grid) 
         old_splines = torch.einsum('ijk,hk->ijh', coeffs, old_b).unsqueeze(-1)
         new_b = temp_rbf(inputs, new_grid)
-        new_b = new_b.repeat(output_dim, input_dim, 1,1)
+        new_b = new_b.repeat(self.output_dim, self.input_dim, 1,1)
         new_coeffs = torch.linalg.lstsq(new_b, old_splines).solution.squeeze(-1)
-        new_coeffs = new_coeffs.reshape(output_dim, input_dim * new_grid.shape[0])
+        new_coeffs = new_coeffs.reshape(self.output_dim, self.input_dim * new_grid.shape[0])
         new_coeffs.requires_grad_()
-        self.spline_linear.weight.data = new_coeffs.to(self.spline_linear.weight.data.device)
+        self.spline_linear = SplineLinear(self.input_dim * new_grid.shape[0], self.output_dim, degree = new_grid.shape[0])
+        with torch.no_grad():
+            self.spline_linear.weight.copy_(new_coeffs.to(torch.device('cuda:0')))
         self.num_grids += increment
+        new_grid = nn.Parameter(new_grid.to(torch.device('cuda:0')), requires_grad = False)
+        self.rbf.grid = new_grid
         
     def plot_curve(
         self,
