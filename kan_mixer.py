@@ -19,7 +19,7 @@ from torch.nn.modules.utils import _pair
 
 from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from timm.models.layers import DropPath, trunc_normal_
-from timm.models.registry import register_model
+from timm.models._registry import register_model
 from timm.layers.helpers import to_2tuple
 
 
@@ -415,7 +415,7 @@ class KANMixer(nn.Module):
         return out
 
     def grid_extension(self, increment = 1):
-        for layer in in self.mixer_layers:
+        for layer  in self.mixer_layers:
             layer.grid_extension(increment = increment)
 
         self.patch_emb.grid_extension(increment = increment)
@@ -445,6 +445,9 @@ class MixerLayer(nn.Module):
         out = self.kan2(out)
         return out
 
+    def grid_extension(self, increment = 1):
+        self.kan1.grid_extension(increment=increment)
+        self.kan2.grid_extension(increment=increment)
     def normalize(self):
         self.kan1.normalize()
         self.kan2.normalize()

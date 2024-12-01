@@ -16,7 +16,7 @@ parser.add_argument('--model', required=True, choices=['mlp_mixer', 'kan_mixer',
 parser.add_argument('--batch-size', type=int, default=128)
 parser.add_argument('--eval-batch-size', type=int, default=1024)
 parser.add_argument('--num-workers', type=int, default=4)
-parser.add_argument('--seed', type=int, default=3407)
+parser.add_argument('--seed', type=int, default=1028)
 parser.add_argument('--epochs', type=int, default=300)
 parser.add_argument('--checkpoint-epoch', type=int, default=0)
 parser.add_argument('--init', default='default', choices=['default', 'uniform', 'xavier', 'beta', 'gamma', 'exponential', 'zero', 'orthogonal'])

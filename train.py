@@ -307,12 +307,19 @@ class Trainer(object):
 
              #   self.compute_svd(epoch, test_dl, init = init)
 
-            if epoch % 2 == 1:
-                increment = 1
-                self.model.grid_extension(increment = increment)
-                print(f"Grid successfully extended by {increment}")
-                print(f"Parameters after update: {sum(p.numel() for p in self.model.parameters() if p.requires_grad)}")
+            if False:#epoch % 50 == 1:
+                increment = 2
+                if torch.cuda.device_count() <= 1:
+
+                    self.model.grid_extension(increment = increment)
+                    print(f"Grid successfully extended by {increment}")
+                    print(f"Parameters after update: {sum(p.numel() for p in self.model.parameters() if p.requires_grad)}")
+                else:
+                    self.model.module.grid_extension(increment = increment)
+                    print(f"Grid successfully extended by {increment}")
+                    print(f"Parameters after update: {sum(p.numel() for p in self.model.module.parameters() if p.requires_grad)}")
                 
+                self.model = self.model.to(self.device)
             for batch in train_dl:
                 self._train_one_step(batch)
             wandb.log({

@@ -36,7 +36,7 @@ def get_model(args):
             is_cls_token=args.is_cls_token,
             use_poly = False, 
             degree_poly = 2,
-            use_base_update = True,
+            use_base_update = False,
             base_activation = F.silu,
             use_same_fn = True,
             use_hankel = False,
@@ -73,7 +73,7 @@ def get_model(args):
             degree_poly = 2,
             use_base_update = True,
             base_activation = F.silu,
-            use_same_fn = False,
+            use_same_fn = True,
             use_same_weight = False,
             use_pe = False,
             use_cpd = False,
@@ -106,7 +106,6 @@ def get_model(args):
             use_cpd = False,
             use_softmax_prod = False,
         )
-        
     elif args.model=='effkan_mixer':
         from effkan_mixer import KANMixer
         model = KANMixer(
@@ -125,7 +124,6 @@ def get_model(args):
             enable_standalone_scale_spline = False,
             use_pe = True,
         )
-        
     elif args.model=='hire_mixer':
         from hire_mixer import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
@@ -153,11 +151,9 @@ def get_model(args):
                     **kwargs
                     }
             return model
-
+        
         model =  hire_mlp_tiny()
-
-
-     elif args.model=='hire_mixer_2':
+    elif args.model=='hire_mixer_2':
         from hire_mixer_2 import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
         def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
