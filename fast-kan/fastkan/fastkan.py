@@ -311,6 +311,43 @@ class RadialBasisFunction(nn.Module):
     def forward(self, x):
         return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
 
+
+class LearnableRadialBasisFunction(nn.Module):
+    def __init__(
+        self,
+        grid_min: float = -2.,
+        grid_max: float = 2.,
+        num_grids: int = 8,
+        grid_type: str = 'uniform',
+        denominator: float = None,  # larger denominators lead to smoother basis
+    ):
+        super().__init__()
+        self.grid_min = grid_min
+        self.grid_max = grid_max
+        self.num_grids = num_grids
+        if grid_type == 'uniform':
+            grid = torch.linspace(grid_min - 0.01, grid_max + 0.01, num_grids)
+        elif grid_type == 'chebyshev':
+            nodes = torch.cos((2 * torch.arange(1, num_grids + 1) - 1) * math.pi / (2 * num_grids))
+            grid = 0.5 * (grid_max - grid_min) * nodes + 0.5 * (grid_max + grid_min)
+            
+        self.grid = torch.nn.Parameter(grid)
+        if denominator == 0:
+            self.denominator = (grid_max - grid_min) / (num_grids - 1)
+        elif denominator < 0:
+            self.denominator = torch.abs(denominator*self.grid).clone()
+            self.denominator = torch.clamp(self.denominator, min = 0.5)
+            self.denominator = torch.nn.Parameter(self.denominator, requires_grad=False)
+        elif denominator == 2.22:
+            self.denominator = grid_max - torch.abs(self.grid).clone()
+            self.denominator = torch.clamp(self.denominator, min = 0.5)
+            self.denominator = torch.nn.Parameter(self.denominator, requires_grad=False)
+        else:
+            self.denominator = denominator
+
+    def forward(self, x):
+        return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
+
 class PolyBasisFunction(nn.Module):
     def __init__(
         self,
@@ -388,6 +425,11 @@ class FastKANLayer(nn.Module):
         self.denominator = denominator or (grid_max - grid_min)/(num_grids - 1)
         self.hadmard = False
         self.parallel = False
+        self.use_base_noise = False
+        self.use_random_proj = False
+        self.use_base_skip = False
+        self.use_half_grid = True
+        
         if self.hadmard:
             self.w1 = nn.Parameter(torch.tensor(1.0)) 
             self.w2  = nn.Parameter(torch.tensor(1.0))
@@ -439,21 +481,39 @@ class FastKANLayer(nn.Module):
 
         if use_fourier:
             self.fourier_layer = FourierLayer(input_dim, output_dim, N = N, P = P)
-            
+
+        if self.use_half_grid:
+            #self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids // 2, grid_type = grid_type, denominator = denominator)
+            self.learn_rbf = LearnableRadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             
         self.use_base_update = use_base_update
         if use_base_update:
             self.base_activation = base_activation
             self.base_linear = nn.Linear(input_dim, output_dim)
 
+            if self.use_base_skip:
+                self.base_linear = nn.Parameter((torch.ones(output_dim, input_dim) / input_dim), requires_grad = False)
+
+            if self.use_random_proj:
+                self.base_linear = nn.Parameter(0.1*torch.randn(output_dim, input_dim), requires_grad = False)
+
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
             spline_basis = self.rbf(self.layernorm(x))
+
+            if self.use_half_grid:
+                #learned_spline_basis = self.learn_rbf(self.layernorm(x))
+                #spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
+                spline_basis = self.learn_rbf(self.layernorm(x))
             #x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
             #pass
             
         else:
             spline_basis = self.rbf(x)
+            if self.use_half_grid:
+                #learned_spline_basis = self.learn_rbf(x)
+                #spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
+                spline_basis = self.learn_rbf(x)
 
         if self.parallel:
             ret1 = self.spline_linear1(spline_basis)
@@ -483,7 +543,14 @@ class FastKANLayer(nn.Module):
             ret = self.w1 * ret + self.w2 * (ret**2)
 
         if self.use_base_update:
-            base = self.base_linear(self.base_activation(x))
+            if self.use_base_skip or self.use_random_proj:
+                base = F.linear(self.base_activation(x), self.base_linear)
+            else:
+                if self.use_base_noise:
+                    base = self.base_linear(self.base_activation(x + torch.randn(1).item()))
+                else:
+                    base = self.base_linear(self.base_activation(x))
+                
             ret = ret + base
        # print(self.input_dim, self.output_dim, ret.requires_grad)
         return ret
