@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import math
 
+"""python main.py --init 'default' --init-scale 0.11 --lr 1e-3 --weight-decay 5e-5  --dataset 'c100' --model 'effkan_mixer' --autoaugment --epochs 600 --eval-batch-size 256 --num-workers 4 --cutmix-prob 0.5 --mixup-prob 0 --patch-size 8 --hidden-c 300 --hidden-s 75 --hidden-size 100  --batch-size 256 --num-layers 4 --skip-min 1.0 --checkpoint-epoch 0"""
 
 class KANLinear(torch.nn.Module):
     def __init__(
@@ -24,7 +25,9 @@ class KANLinear(torch.nn.Module):
         self.out_features = out_features
         self.grid_size = grid_size
         self.spline_order = spline_order
-
+        self.use_half_grid = False
+        self.swiglu = False
+        
         self.layernorm = None
         if use_layernorm:
             assert in_features > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
@@ -39,12 +42,34 @@ class KANLinear(torch.nn.Module):
             .expand(in_features, -1)
             .contiguous()
         )
+
+        if self.use_half_grid:
+            self.learn_grid =  torch.nn.Parameter((
+            (
+                torch.arange(-spline_order, grid_size + spline_order + 1) * h
+                + grid_range[0]
+            ).contiguous()
+        ))
+            print("Using learn B-spline")
+            
         self.register_buffer("grid", grid)
 
         self.base_weight = torch.nn.Parameter(torch.Tensor(out_features, in_features))
         self.spline_weight = torch.nn.Parameter(
             torch.Tensor(out_features, in_features, grid_size + spline_order)
         )
+
+        #self.bias = torch.nn.Parameter(
+        #    scale_spline * torch.randn(out_features)
+        #)
+        #print("Using bias")
+
+        if self.swiglu:
+            self.spline_weight2 = torch.nn.Parameter(
+            torch.Tensor(out_features, in_features, grid_size + spline_order)
+            )
+            print("Using SwiGLU")
+            
         if enable_standalone_scale_spline:
             self.spline_scaler = torch.nn.Parameter(
                 torch.Tensor(out_features, in_features)
@@ -77,6 +102,23 @@ class KANLinear(torch.nn.Module):
                     noise,
                 )
             )
+
+            if self.swiglu:
+                noise = (
+                (
+                    torch.rand(self.grid_size + 1, self.in_features, self.out_features)
+                    - 1 / 2
+                )
+                * self.scale_noise
+                / self.grid_size
+                )
+                self.spline_weight2.data.copy_(
+                (self.scale_spline if not self.enable_standalone_scale_spline else 1.0)
+                * self.curve2coeff(
+                    self.grid.T[self.spline_order : -self.spline_order],
+                    noise,
+                )
+                )
             if self.enable_standalone_scale_spline:
                 # torch.nn.init.constant_(self.spline_scaler, self.scale_spline)
                 torch.nn.init.kaiming_uniform_(self.spline_scaler, a=math.sqrt(5) * self.scale_spline)
@@ -96,6 +138,8 @@ class KANLinear(torch.nn.Module):
         grid: torch.Tensor = (
             self.grid
         )  # (in_features, grid_size + 2 * spline_order + 1)
+
+        
         x = x.unsqueeze(-1)
         bases = ((x >= grid[:, :-1]) & (x < grid[:, 1:])).to(x.dtype)
         for k in range(1, self.spline_order + 1):
@@ -114,8 +158,59 @@ class KANLinear(torch.nn.Module):
             self.in_features,
             self.grid_size + self.spline_order,
         )
+    
+            #assert bases.size() == (
+            #    x.size(0),
+            #    self.in_features,
+            #    self.grid_size + self.spline_order,
+            #)
         return bases.contiguous()
 
+    def learn_b_splines(self, x: torch.Tensor):
+        """
+        Compute the B-spline bases for the given input tensor.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (batch_size, in_features).
+
+        Returns:
+            torch.Tensor: B-spline bases tensor of shape (batch_size, in_features, grid_size + spline_order).
+        """
+        assert x.dim() == 2 and x.size(1) == self.in_features
+        
+        #grid: torch.Tensor = (
+        #    self.grid
+        #)  # (in_features, grid_size + 2 * spline_order + 1)
+
+        grid = self.learn_grid.expand(x.size(1), -1)
+        
+        x = x.unsqueeze(-1)
+        bases = ((x >= grid[:, :-1]) & (x < grid[:, 1:])).to(x.dtype)
+        for k in range(1, self.spline_order + 1):
+            bases = (
+                (x - grid[:, : -(k + 1)])
+                / (grid[:, k:-1] - grid[:, : -(k + 1)])
+                * bases[:, :, :-1]
+            ) + (
+                (grid[:, k + 1 :] - x)
+                / (grid[:, k + 1 :] - grid[:, 1:(-k)])
+                * bases[:, :, 1:]
+            )
+
+        assert bases.size() == (
+            x.size(0),
+            self.in_features,
+            self.grid_size + self.spline_order,
+        )
+    
+            #assert bases.size() == (
+            #    x.size(0),
+            #    self.in_features,
+            #    self.grid_size + self.spline_order,
+            #)
+        return bases.contiguous()
+
+        
     def curve2coeff(self, x: torch.Tensor, y: torch.Tensor):
         """
         Compute the coefficients of the curve that interpolates the given points.
@@ -156,23 +251,71 @@ class KANLinear(torch.nn.Module):
             else 1.0
         )
 
+    @property
+    def scaled_spline_weight2(self):
+        return self.spline_weight2 * (
+            self.spline_scaler.unsqueeze(-1)
+            if self.enable_standalone_scale_spline
+            else 1.0
+        )
+
     def forward(self, x: torch.Tensor):
         assert x.size(-1) == self.in_features
         original_shape = x.shape
         x = x.reshape(-1, self.in_features)
-
-        base_output = F.linear(self.base_activation(x), self.base_weight)
+        
+        base_output = F.linear(self.base_activation(x), self.base_weight) 
+        #base_output = base_output + torch.randn(base_output.size()).to(base_output.device)
+        #x shape: [...., self.in_features]
+        
         
         if self.layernorm is not None:
             x = self.layernorm(x)
             
-        spline_output = F.linear(
+        """
+        reduce_dims = tuple(range(x.ndim - 1))
+        max_tensor_x = torch.amax(x, dim=reduce_dims)
+        min_tensor_x = torch.amin(x, dim=reduce_dims)
+        num_points = self.grid_size + 2 * self.spline_order + 1
+        # Create a linspace for each feature
+        linspace_tensor = torch.linspace(0, 1, num_points).to(min_tensor_x)  # Create base linspace [0, 1]
+        linspace_tensor = linspace_tensor.unsqueeze(0)  # Shape [1, 10]
+        # Scale and shift to the range of each feature
+        linspace_tensor = min_tensor_x.unsqueeze(1) + linspace_tensor * (max_tensor_x - min_tensor_x).unsqueeze(1)
+        self.grid = linspace_tensor
+        """
+
+        if self.use_half_grid:
+            spline_output = F.linear(
+                self.b_splines(x).view(x.size(0), -1),
+                self.scaled_spline_weight.view(self.out_features, -1),
+            )
+        else:
+            spline_output = F.linear(
+                self.b_splines(x).view(x.size(0), -1),
+                self.scaled_spline_weight.view(self.out_features, -1),
+            )
+
+        if self.use_half_grid:
+            learn_spline_output = F.linear(
+                self.learn_b_splines(x).view(x.size(0), -1),
+                self.scaled_spline_weight.view(self.out_features, -1),
+            )
+            
+
+        if self.swiglu:
+            spline_output2 = F.linear(
             self.b_splines(x).view(x.size(0), -1),
-            self.scaled_spline_weight.view(self.out_features, -1),
+            self.scaled_spline_weight2.view(self.out_features, -1),
         )
-        output = base_output + spline_output
         
-        output = output.reshape(*original_shape[:-1], self.out_features)
+        output = base_output + spline_output
+        #output = base_output 
+        #output = spline_output 
+        if self.swiglu:
+            output = output + spline_output2
+            
+        output = output.reshape(*original_shape[:-1], self.out_features) #+ self.bias
         return output
 
     @torch.no_grad()
