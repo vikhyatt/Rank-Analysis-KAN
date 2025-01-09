@@ -211,13 +211,38 @@ def get_model(args):
 
     else:
         raise ValueError(f"No such model: {args.model}")
-        
+
+
+    model_configs = f"{args.model}_{args.dataset}_{args.optimizer}_{args.scheduler}_{args.lr}_PS{args.patch_size}_HSize{args.hidden_size}_HC{args.hidden_c}_HS{args.hidden_s}_NL{args.num_layers}_SM{args.skip_min}_PARAMS{sum(p.numel() for p in model.parameters() if p.requires_grad)}_init{args.init}_scale_{args.init_scale}_NG{args.num_grids}_Grid{args.grid_type}{args.grid_min},{args.grid_max}_WD{args.weight_decay}_D{args.denominator}_WN{args.w_norm}_FD{args.fd_degree, args.fd_lambda},F{args.use_fourier}"
+    args.model_configs = model_configs
+    
     if True:#torch.cuda.device_count() > 1:
         #torch.cuda.set_device(1)
         #model = nn.DataParallel(model, device_ids=[1,2,3]) 
         #model = torch.compile(model)
         #model.to(args.rank)
         #ddp_model = DDP(model, device_ids=[args.rank])
+        if args.checkpoint_epoch:
+            PATH = f"../saved_models/{args.checkpoint_epoch}, {args.model_configs}.pt"
+            
+            checkpoint = torch.load(PATH, map_location = 'cpu', weights_only=True)
+
+            state_dict = checkpoint['model_state_dict']
+            # If the model was saved with DataParallel, keys will have `module.` prefix
+            if torch.cuda.device_count() >= 1:
+                from collections import OrderedDict
+                new_state_dict = OrderedDict()
+                for k, v in state_dict.items():
+                # Strip the `module.` prefix from the keys
+                    name = k.replace('_orig_mod.module.', '') 
+                    new_state_dict[name] = v
+            #self.model.load_state_dict(checkpoint['model_state_dict'])
+                model.load_state_dict(new_state_dict)
+            else:
+                model.load_state_dict(checkpoint['model_state_dict'])
+                #self.model = nn.DataParallel(self.model)
+                #self.model = self.model.to(self.device)
+            
         model.to(args.rank)
         ddp_model = DDP(model, device_ids=[args.rank], find_unused_parameters=False)
         ddp_model = torch.compile(ddp_model, dynamic=True)

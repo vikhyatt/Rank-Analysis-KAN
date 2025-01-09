@@ -309,7 +309,19 @@ class Trainer(object):
         torch.set_float32_matmul_precision('high')
         if self.checkpoint_epoch:
             PATH = f"../saved_models/{self.checkpoint_epoch}, {self.model_configs}.pt"
-            checkpoint = torch.load(PATH, map_location = self.device, weights_only=True)
+            
+            checkpoint = torch.load(PATH, map_location = f'cuda:{self.device}', weights_only=True)
+            """
+            if self.rank == 0:
+                checkpoint = torch.load(PATH, map_location=f'cuda:{self.device}', weights_only=True)
+            else:
+                checkpoint = None
+        
+            # Broadcast the checkpoint to all ranks
+            checkpoint = dist.broadcast_object_list([checkpoint], src=0)[0]
+            """
+
+            """
             state_dict = checkpoint['model_state_dict']
             # If the model was saved with DataParallel, keys will have `module.` prefix
             if torch.cuda.device_count() <= 1:
@@ -325,7 +337,8 @@ class Trainer(object):
                 self.model.load_state_dict(checkpoint['model_state_dict'])
                 #self.model = nn.DataParallel(self.model)
                 #self.model = self.model.to(self.device)
-
+            """
+            
             self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
             run_epoch = checkpoint['epoch']
             run_loss = checkpoint['loss']
