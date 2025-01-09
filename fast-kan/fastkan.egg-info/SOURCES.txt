@@ -5,6 +5,7 @@ efficient_kan/__init__.py
 efficient_kan/kan.py
 fastkan/__init__.py
 fastkan/fastkan.py
+fastkan/fastkan2.py
 fastkan.egg-info/PKG-INFO
 fastkan.egg-info/SOURCES.txt
 fastkan.egg-info/dependency_links.txt

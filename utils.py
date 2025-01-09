@@ -2,6 +2,8 @@ import numpy as np
 import torch.nn.functional as F
 import torch.nn as nn
 import torch
+from torch.nn.parallel import DistributedDataParallel as DDP
+
 
 def get_model(args):
     model = None
@@ -36,7 +38,7 @@ def get_model(args):
             is_cls_token=args.is_cls_token,
             use_poly = False, 
             degree_poly = 2,
-            use_base_update = False,
+            use_base_update = True,
             base_activation = F.silu,
             use_same_fn = True,
             use_hankel = False,
@@ -128,12 +130,12 @@ def get_model(args):
         from hire_mixer import HireMLPNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
         def hire_mlp_tiny(pretrained=False, **kwargs):
-            #layers = [2, 2, 4, 2]
-            layers = [2,4,2]
-            #mlp_ratios = [4, 4, 4, 4]
-            mlp_ratios = [4,4,4]
-            #embed_dims = [64, 128, 320, 512]
-            embed_dims = [64,128, 320]
+            layers = [2, 2, 4, 2]
+            #layers = [2,4,2]
+            mlp_ratios = [4, 4, 4, 4]
+            #mlp_ratios = [4,4,4]
+            embed_dims = [64, 128, 320, 512]
+            #embed_dims = [64,128, 320]
             pixel = [4, 3, 3, 2]
             step_stride = [2, 2, 3, 2]
             step_dilation = [2, 2, 1, 1]
@@ -181,21 +183,21 @@ def get_model(args):
         model =  hire_mlp_tiny(args.size, args.num_classes)
 
     elif args.model=='hire_kan':
-        from hire_kan import HireMLPNet
+        from hire_kan import HireKANNet
         from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-        def hire_mlp_tiny(size,classes, pretrained=False, **kwargs):
-            layers = [ 1, 1]
-            mlp_ratios = [3, 3]
-            embed_dims = [ 150, 150]
-            pixel = [4, 3, 3, 2]
-            step_stride = [2, 2, 3, 2]
-            step_dilation = [2, 2, 1, 1]
+        def hire_kan_tiny(size,classes,grids,use_same_fn, pretrained=False, **kwargs):
+            layers = [2,2]
+            mlp_ratios = [2, 2]
+            embed_dims = [250, 200]
+            pixel = [3,3]
+            step_stride = [2, 2,]
+            step_dilation = [2, 1]
             step_pad_mode = 'c'
             pixel_pad_mode = 'c'
-            model = HireMLPNet(
+            model = HireKANNet(
                 layers, embed_dims=embed_dims, patch_size=7, mlp_ratios=mlp_ratios, pixel=pixel,
-                step_stride=step_stride, step_dilation=step_dilation,
-                step_pad_mode=step_pad_mode, pixel_pad_mode=pixel_pad_mode, **kwargs)
+                step_stride=step_stride, step_dilation=step_dilation,num_classes = classes,
+                step_pad_mode=step_pad_mode, pixel_pad_mode=pixel_pad_mode, num_grids = grids, use_same_fn = use_same_fn, **kwargs)
             model.default_cfg = {
                     'url': '',
                     'num_classes': classes, 'input_size': (3, size, size), 'pool_size': None,
@@ -205,13 +207,27 @@ def get_model(args):
                     }
             return model
 
-        model =  hire_mlp_tiny(args.size, args.num_classes)
+        model =  hire_kan_tiny(args.size, args.num_classes, args.num_grids, use_same_fn = True)
 
     else:
         raise ValueError(f"No such model: {args.model}")
-    if torch.cuda.device_count() > 1:
-        model = nn.DataParallel(model)
-    return model.to(args.device)
+        
+    if True:#torch.cuda.device_count() > 1:
+        #torch.cuda.set_device(1)
+        #model = nn.DataParallel(model, device_ids=[1,2,3]) 
+        #model = torch.compile(model)
+        #model.to(args.rank)
+        #ddp_model = DDP(model, device_ids=[args.rank])
+        model.to(args.rank)
+        ddp_model = DDP(model, device_ids=[args.rank], find_unused_parameters=False)
+        ddp_model = torch.compile(ddp_model, dynamic=True)
+        
+    else:
+        print("Using Torch compile to speed up training")
+        model = torch.compile(model) #Compile does not work with DataParallel
+    
+    #return model.to(args.device)
+    return ddp_model
 
 def rand_bbox(size, lam):
     W = size[2]

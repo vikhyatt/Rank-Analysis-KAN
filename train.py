@@ -14,14 +14,18 @@ import matplotlib.pyplot as plt
 from torch.linalg import svdvals
 import copy
 from torchvision.transforms import v2
+import torch.distributed as dist
 
 
 class Trainer(object):
     def __init__(self, model, args):
         self.model_configs = args.model_configs
         self.checkpoint_epoch = args.checkpoint_epoch
-        wandb.config.update(args)
-        self.device = args.device
+        if args.rank == 0:
+            wandb.config.update(args)
+
+        self.rank = args.rank
+        self.device = args.rank
         self.clip_grad = args.clip_grad
         self.cutmix_beta = args.cutmix_beta
         self.cutmix_prob = args.cutmix_prob
@@ -36,16 +40,24 @@ class Trainer(object):
         self.optim_name = 'none'
         self.min_lr = args.min_lr
         self.amp_train = True
+        if self.amp_train:
+            self.amp_precision = torch.bfloat16
+            
+        print(f"Using mixed precision training: {self.amp_train}")
         self.fd_degree = args.fd_degree
         self.fd_lambda = args.fd_lambda
 
         self.cutmix = v2.CutMix(alpha = self.cutmix_beta, num_classes=args.num_classes)
         self.mixup = v2.MixUp(alpha = self.mixup_beta, num_classes=args.num_classes)
+        self.cutmix_or_mixup = v2.RandomChoice([self.cutmix, self.mixup])
         
         if args.optimizer=='sgd':
             self.optimizer = optim.SGD(self.model.parameters(), lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay, nesterov=args.nesterov)
         elif args.optimizer=='adam':
             self.optimizer = optim.Adam(self.model.parameters(), lr=args.lr, betas=(args.beta1, args.beta2), weight_decay=args.weight_decay)
+
+        elif args.optimizer=='adamw':
+            self.optimizer = optim.AdamW(self.model.parameters(), lr=args.lr, betas=(args.beta1, args.beta2), weight_decay=args.weight_decay)
 
         elif args.optimizer == 'lion':
             self.optimizer = Lion(self.model.parameters(), lr=args.lr, betas=(args.beta1, args.beta2), weight_decay=args.weight_decay)
@@ -99,7 +111,7 @@ class Trainer(object):
         if self.mixup_beta > 0 and r < self.mixup_prob:
             img, label  = self.mixup(img, label)
         """
-
+        """
         if self.cutmix_beta > 0 and r < self.cutmix_prob:
             # generate mixed sample
             lam = np.random.beta(self.cutmix_beta, self.cutmix_beta)
@@ -112,7 +124,7 @@ class Trainer(object):
             lam = 1 - ((bbx2 - bbx1) * (bby2 - bby1) / (img.size()[-1] * img.size()[-2]))
             # compute output
             if self.amp_train:
-                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                with torch.amp.autocast('cuda',dtype = self.amp_precision):
                     out = self.model(img)
                     loss = self.criterion(out, target_a) * lam + self.criterion(out, target_b) * (1. - lam)
             else:
@@ -121,13 +133,20 @@ class Trainer(object):
         else:
             # compute output
             if self.amp_train:
-                with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                with torch.amp.autocast('cuda',dtype = self.amp_precision):
                     out = self.model(img)
                     loss = self.criterion(out, label)
             else:
                 out = self.model(img)
                 loss = self.criterion(out, label)
+
         """
+        """
+        if self.cutmix_beta > 0 and r < self.cutmix_prob:
+            img, label  = self.cutmix(img, label)
+        """
+        
+        img, label  = self.cutmix_or_mixup(img, label)
         if self.amp_train:
             with torch.amp.autocast('cuda',dtype = torch.bfloat16):
                 out = self.model(img)
@@ -135,17 +154,18 @@ class Trainer(object):
         else:
             out = self.model(img)
             loss = self.criterion(out, label) 
-        """       
+
+        
         if self.fd_degree > 0:
             if torch.cuda.device_count() > 1:
                 if self.amp_train:
-                    with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                    with torch.amp.autocast('cuda',dtype = self.amp_precision):
                         loss += self.fd_lambda * self.model.module.finite_difference(degree = self.fd_degree)
                 else:
                     loss += self.fd_lambda * self.model.module.finite_difference(degree = self.fd_degree)
             else:
                 if self.amp_train:
-                    with torch.amp.autocast('cuda',dtype = torch.bfloat16):
+                    with torch.amp.autocast('cuda',dtype = self.amp_precision):
                         loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
                 else:
                     loss += self.fd_lambda * self.model.finite_difference(degree = self.fd_degree)
@@ -165,11 +185,26 @@ class Trainer(object):
                 nn.utils.clip_grad_norm_(self.model.parameters(), self.clip_grad)
             self.optimizer.step()
 
+        if True:
+            label = torch.argmax(label, dim = -1)
+            
         acc = out.argmax(dim=-1).eq(label).sum(-1)/img.size(0)
-        wandb.log({
-            'loss':loss,
-            'acc':acc
-        }, step=self.num_steps)
+        
+        topk = 5
+        # Get the top 5 predictions for each sample (values and indices)
+        top5_out = out.topk(topk, dim=-1, largest=True, sorted=True).indices
+        # Check if the true label is in the top 5 predictions
+        correct_top5 = top5_out.eq(label.unsqueeze(-1))  # Compare with the labels
+        # Compute the top-5 accuracy by averaging over all samples
+        top5_acc = correct_top5.sum().float() / img.size(0)
+
+        if self.rank == 0:
+            wandb.log({
+                'loss':loss,
+                'acc':acc,
+                'top5_acc':top5_acc
+            }, step=self.num_steps)
+
 
 
     # @torch.no_grad
@@ -184,6 +219,11 @@ class Trainer(object):
         
         self.epoch_loss += loss * img.size(0)
         self.epoch_corr += out.argmax(dim=-1).eq(label).sum(-1)
+
+        topk = 5
+        top5_out = out.topk(topk, dim=-1, largest=True, sorted=True).indices
+        correct_top5 = top5_out.eq(label.unsqueeze(-1))  # Compare with the labels
+        self.epoch_top5corr += correct_top5.sum().float()
 
 
     def compute_svd(self, epoch, test_dl, init = 'default'):
@@ -266,6 +306,7 @@ class Trainer(object):
 
     
     def fit(self, train_dl, test_dl, init = 'default'):
+        torch.set_float32_matmul_precision('high')
         if self.checkpoint_epoch:
             PATH = f"../saved_models/{self.checkpoint_epoch}, {self.model_configs}.pt"
             checkpoint = torch.load(PATH, map_location = self.device, weights_only=True)
@@ -320,32 +361,47 @@ class Trainer(object):
                     print(f"Parameters after update: {sum(p.numel() for p in self.model.module.parameters() if p.requires_grad)}")
                 
                 self.model = self.model.to(self.device)
+
+            print(f"Epoch {epoch}, Rank {self.rank}, Training started")
             for batch in train_dl:
                 self._train_one_step(batch)
-            wandb.log({
-                'epoch': epoch, 
-                # 'lr': self.scheduler.get_last_lr(),
-                'lr':self.optimizer.param_groups[0]["lr"]
-                }, step=self.num_steps
-            )
+
+            print(f"Epoch {epoch}, Rank {self.rank}, Training done")
+            #dist.barrier()
             
+            if self.rank == 0:
+                wandb.log({
+                    'epoch': epoch, 
+                    # 'lr': self.scheduler.get_last_lr(),
+                    'lr':self.optimizer.param_groups[0]["lr"]
+                    }, step=self.num_steps
+                )
+                
+            print(f"Epoch {epoch}, Rank {self.rank}, Sent Logs")
             if self.is_scheduler != 'none':
                 self.scheduler.step()
 
-            
-            num_imgs = 0.
-            self.epoch_loss, self.epoch_corr, self.epoch_acc = 0., 0., 0.
-            for batch in test_dl:
-                self._test_one_step(batch)
-                num_imgs += batch[0].size(0)
-            self.epoch_loss /= num_imgs
-            self.epoch_acc = self.epoch_corr / num_imgs
-            wandb.log({
-                'val_loss': self.epoch_loss,
-                'val_acc': self.epoch_acc
-                }, step=self.num_steps
-            )
+            if self.rank == 0:
+                print(f"Epoch {epoch}, Rank {self.rank}, Validation started")
+                num_imgs = 0.
+                self.epoch_loss, self.epoch_corr, self.epoch_acc, self.epoch_top5corr, self.epoch_top5acc = 0., 0., 0., 0.,0.
+                for batch in test_dl:
+                    self._test_one_step(batch)
+                    num_imgs += batch[0].size(0)
+                self.epoch_loss /= num_imgs
+                self.epoch_acc = self.epoch_corr / num_imgs
+                self.epoch_top5acc = self.epoch_top5corr / num_imgs
+                if self.rank == 0:
+                    wandb.log({
+                        'val_loss': self.epoch_loss,
+                        'val_acc': self.epoch_acc,
+                        'top5_val_acc': self.epoch_top5acc
+                        }, step=self.num_steps
+                    )
 
+            #dist.barrier()
+            print(f"Epoch {epoch}, Rank {self.rank}, Validation done for 1 epoch")
+            
             if self.u_norm and epoch % self.u_epoch == 0:
                 if torch.cuda.device_count() == 1:
                     self.model.normalize()

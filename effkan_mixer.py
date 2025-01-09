@@ -334,6 +334,7 @@ class KANMixer(nn.Module):
         self.patch_emb = nn.Sequential(
             Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_size, p2 = patch_size),
             KANLinear((patch_size ** 2) * in_channels, hidden_size, base_activation = base_activation, enable_standalone_scale_spline = enable_standalone_scale_spline)
+            #nn.Linear((patch_size ** 2) * in_channels, hidden_size)
         )
 
         self.use_pe = use_pe
@@ -379,7 +380,14 @@ class KANMixer(nn.Module):
         )
         self.ln = nn.LayerNorm(hidden_size)
         self.clf = KANLinear(hidden_size, num_classes, base_activation = base_activation, enable_standalone_scale_spline = enable_standalone_scale_spline)
+        #elf.clf = nn.Linear(hidden_size, num_classes)
 
+    def regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0):
+        loss = self.clf.regularization_loss(regularize_activation=1.0, regularize_entropy=1.0)
+        loss += self.patch_emb[1].regularization_loss(regularize_activation=1.0, regularize_entropy=1.0)
+        for layer in mixer_layers:
+            loss += layer.regularization_loss(regularize_activation=1.0, regularize_entropy=1.0)
+        return loss
 
     def forward(self, x):
         out = self.patch_emb(x)
@@ -421,6 +429,9 @@ class MixerLayer(nn.Module):
         out = self.kan2(out)
         return out
 
+    def regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0):
+        return self.kan1.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) + self.kan2.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) 
+
 class KAN1(nn.Module):
     def __init__(self, num_patches, hidden_s, hidden_size, drop_p, off_act,base_activation = F.silu, enable_standalone_scale_spline = False):
         super(KAN1, self).__init__()
@@ -434,6 +445,10 @@ class KAN1(nn.Module):
         
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
+
+    def regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0):
+        return self.fc1.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) + self.fc2.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) 
+        
     def forward(self, x):
         #out = self.do1(self.act(self.fc1(self.ln(x))))
         #out = self.do2(self.fc2(out))
@@ -463,6 +478,10 @@ class KAN2(nn.Module):
         self.fc2 = KANLinear(hidden_c, hidden_size, base_activation = base_activation, enable_standalone_scale_spline = enable_standalone_scale_spline)
         self.do2 = nn.Dropout(p=drop_p)
         self.act = F.gelu if not off_act else lambda x:x
+
+    def regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0):
+        return self.fc1.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) + self.fc2.regularization_loss(self,regularize_activation=1.0, regularize_entropy=1.0) 
+        
     def forward(self, x):
         
         #out = self.do1(self.act(self.fc1(self.ln(x))))

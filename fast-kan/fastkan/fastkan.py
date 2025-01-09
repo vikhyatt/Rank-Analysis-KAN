@@ -17,10 +17,12 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import numpy as np
 from torch.nn import Parameter
 import torch.distributions as dist
 from torch.autograd import Variable
 from torch.nn.utils.parametrizations import weight_norm
+import rbf_cuda
 
 from typing import *
 
@@ -196,6 +198,7 @@ class HankelLinear(nn.Module):
         
 class tied_SplineLinear_FAST(nn.Module):
     def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        """ Runs faster than tied_SplineLinear but takes more memory"""
         super(tied_SplineLinear_FAST, self).__init__()
         self.init_scale = init_scale[0]
         self.in_features = in_features
@@ -204,8 +207,8 @@ class tied_SplineLinear_FAST(nn.Module):
         self.w_norm = w_norm
         self.use_same_weight = use_same_weight
         
-        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
-        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1)).contiguous()
+        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features)).contiguous()
         
         self.register_parameter('bias', None)
         self.reset_parameters()
@@ -228,8 +231,157 @@ class tied_SplineLinear_FAST(nn.Module):
         weights = self.weighted_sum.unsqueeze(-1) * weights
         if len(x.shape) == 4:
             x = torch.einsum('bhid,oid->bho', x, weights)
+        elif len(x.shape) == 5:
+            x = torch.einsum('abhid,oid->abho', x, weights)
         else:
             x = torch.einsum('hid,oid->ho', x, weights)
+        return x
+
+        #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
+        #final_weight = torch.cat((self.weight_deg.repeat(self.out_features, 1), self.weight_one), dim = -1)
+        #out = F.linear(x, final_weight, self.bias)
+
+        #degree+1 weights shared across the entire matrix
+        #final_weight = self.weight_deg.repeat(self.out_features, 1)
+        #out = F.linear(x, final_weight, self.bias)
+        
+        #out = out.permute(*range(out.ndim - 2), -1, -2).unsqueeze(-2)
+        #print(out.shape)
+        #out = torch.matmul(out, self.weighted_sum).squeeze(-1).squeeze(-1)
+        #print(out.shape)
+        #out = torch.einsum('...ji,ij->...i', out, self.weighted_sum).contiguous()
+        #out = F.linear(out, self.weighted_sum, self.bias).contiguous()
+        #return x
+
+
+class tied_SplineLinear_FASTER(nn.Module):
+    def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        """ Runs faster than tied_SplineLinear but takes more memory"""
+        super(tied_SplineLinear_FASTER, self).__init__()
+        self.init_scale = init_scale[0]
+        self.in_features = in_features
+        self.out_features = out_features
+        self.degree = degree
+        self.w_norm = w_norm
+        self.use_same_weight = use_same_weight
+        self.weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        
+        self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        nn.init.trunc_normal_(self.weighted_sum, mean=0, std=self.init_scale)
+        
+    def normalize(self):
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+
+    def finite_difference(self, degree = 1):
+        w_s = self.weight.view(self.out_features, self.degree+1)
+        for i in range(degree):
+            w_s = (w_s.narrow(1, 1, w_s.size(1)-1) - w_s.narrow(1, 0, w_s.size(1)-1))
+        return (w_s ** 2).sum()
+        
+    def forward(self, x):
+        other_dims = list(x.size()[:-2])
+        input_dim, d = x.size()[-2:]
+        x_reshaped = x.view(-1, input_dim * d) 
+        weights =  self.weight.unsqueeze(-2).expand(self.out_features, self.in_features, self.degree + 1) 
+        weights = self.weighted_sum.unsqueeze(-1) * weights
+        weights = weights.view(-1, input_dim * d).t()
+        result = torch.matmul(x_reshaped, weights).view(other_dims + [self.out_features])
+        return result
+
+
+class tied_input_SplineLinear_FAST(nn.Module):
+    def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        """ Runs faster than tied_SplineLinear but takes more memory"""
+        super(tied_input_SplineLinear_FAST, self).__init__()
+        self.init_scale = init_scale[0]
+        self.in_features = in_features
+        self.out_features = out_features
+        self.degree = degree
+        self.w_norm = w_norm
+        self.use_same_weight = use_same_weight
+        
+        self.weight = Parameter(torch.Tensor(self.in_features, self.degree + 1))
+        #self.weighted_sum = Parameter(torch.Tensor(out_features, in_features)).contiguous()
+        self.weighted_sum = nn.Linear(in_features, out_features)
+        
+        self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        nn.init.trunc_normal_(self.weight, mean=0, std=self.init_scale)
+        #nn.init.trunc_normal_(self.weighted_sum.weight.data, mean=0, std=self.init_scale)
+        
+    def normalize(self):
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+
+    def finite_difference(self, degree = 1):
+        w_s = self.weight.view(self.out_features, self.degree+1)
+        for i in range(degree):
+            w_s = (w_s.narrow(1, 1, w_s.size(1)-1) - w_s.narrow(1, 0, w_s.size(1)-1))
+        return (w_s ** 2).sum()
+        
+    def forward(self, x):
+        #weights =  self.weight.unsqueeze(0)
+        #for i in range(len(x.shape) - 3):
+        #    weights = weights.unsqueeze(0)
+
+        x = (x * self.weight).sum(dim = -1)
+        x = self.weighted_sum(x)
+        return x
+
+
+
+class rational_tied_SplineLinear_FAST(nn.Module):
+    def __init__(self, in_features, out_features: int, init_scale = [0.1], degree = 3 , use_same_weight = True ,bias=False, w_norm = 0, **kw):
+        super(rational_tied_SplineLinear_FAST, self).__init__()
+        self.init_scale = init_scale[0]
+        self.in_features = in_features
+        self.out_features = out_features
+        self.degree = degree
+        self.w_norm = w_norm
+        self.use_same_weight = use_same_weight
+        
+        self.num_weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        self.den_weight = Parameter(torch.Tensor(out_features, self.degree + 1))
+        self.weighted_sum = Parameter(torch.Tensor(out_features, in_features))
+        
+        self.register_parameter('bias', None)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        nn.init.trunc_normal_(self.num_weight, mean=0, std=self.init_scale)
+        nn.init.trunc_normal_(self.den_weight, mean=0, std=self.init_scale)
+        nn.init.trunc_normal_(self.weighted_sum, mean=0, std=self.init_scale)
+        
+    def normalize(self):
+        self.weight.data = F.normalize(self.weight.data, p=2, dim=-1)
+
+    def finite_difference(self, degree = 1):
+        w_s = self.weight.view(self.out_features, self.degree+1)
+        for i in range(degree):
+            w_s = (w_s.narrow(1, 1, w_s.size(1)-1) - w_s.narrow(1, 0, w_s.size(1)-1))
+        return (w_s ** 2).sum()
+        
+    def forward(self, x):
+        num_weights =  self.num_weight.unsqueeze(-2).expand(self.out_features, self.in_features, self.degree + 1) 
+        den_weights =  self.den_weight.unsqueeze(-2).expand(self.out_features, self.in_features, self.degree + 1) 
+        
+        num_weights = self.weighted_sum.unsqueeze(-1) * num_weights
+        den_weights = self.weighted_sum.unsqueeze(-1) * den_weights
+        
+        if len(x.shape) == 4:
+            num_x = torch.einsum('bhid,oid->bho', x, num_weights)
+            den_x = torch.einsum('bhid,oid->bho', x, den_weights)
+            x = num_x / (1 + torch.abs(den_x))
+        else:
+            num_x = torch.einsum('hid,oid->ho', x, num_weights)
+            den_x = torch.einsum('hid,oid->ho', x, den_weights)
+            x = num_x / (1 + torch.abs(den_x))
         return x
 
         #degree weights shared across the entire matrix + (degree+1)'th weight is unique for each row
@@ -312,6 +464,47 @@ class RadialBasisFunction(nn.Module):
         return torch.exp(-((x[..., None] - self.grid) / self.denominator) ** 2)
 
 
+
+class RadialBasisFunctionCUDAFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, x, grid, denominator):
+        # Call the CUDA kernel
+        ctx.save_for_backward(x, grid)
+        ctx.denominator = denominator
+        output = rbf_cuda.radial_basis_function_cuda(x, grid, denominator)
+        
+        #after_exp = torch.exp(-output**2)
+        return output
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # Retrieve saved tensors
+        x, grid = ctx.saved_tensors
+        denominator = ctx.denominator 
+        #grad_x = rbf_cuda.radial_basis_function_cuda_combined(x, grid, denominator, grad_output.contiguous())
+        x_block_dim = 16
+        y_block_dim = 16
+        z_block_dim = 1
+        grad_x = rbf_cuda.radial_basis_function_cuda_combined(x, grid, denominator, grad_output.contiguous(), x_block_dim , y_block_dim , z_block_dim)
+        return grad_x, None, None
+
+
+class RadialBasisFunctionCUDA(torch.nn.Module):
+    def __init__(self, grid_min=-2., grid_max=2., num_grids=8, denominator=None, **kwargs):
+        super().__init__()
+        self.grid_min = grid_min
+        self.grid_max = grid_max
+        self.num_grids = num_grids
+        self.grid = torch.linspace(grid_min, grid_max, num_grids)#.cuda()
+        self.grid = nn.Parameter(self.grid, requires_grad = False)
+        self.denominator = denominator or (grid_max - grid_min) / (num_grids - 1)
+
+    def forward(self, x):
+        #return rbf_cuda.radial_basis_function_cuda(x, self.grid, self.denominator)
+        return RadialBasisFunctionCUDAFunction.apply(x, self.grid, self.denominator)
+
+
+        
 class LearnableRadialBasisFunction(nn.Module):
     def __init__(
         self,
@@ -320,6 +513,8 @@ class LearnableRadialBasisFunction(nn.Module):
         num_grids: int = 8,
         grid_type: str = 'uniform',
         denominator: float = None,  # larger denominators lead to smoother basis
+        learn_denom = False,
+        learn_grid = True,
     ):
         super().__init__()
         self.grid_min = grid_min
@@ -330,10 +525,12 @@ class LearnableRadialBasisFunction(nn.Module):
         elif grid_type == 'chebyshev':
             nodes = torch.cos((2 * torch.arange(1, num_grids + 1) - 1) * math.pi / (2 * num_grids))
             grid = 0.5 * (grid_max - grid_min) * nodes + 0.5 * (grid_max + grid_min)
-            
-        self.grid = torch.nn.Parameter(grid)
+        
+        self.grid = torch.nn.Parameter(grid, requires_grad = learn_grid)
         if denominator == 0:
             self.denominator = (grid_max - grid_min) / (num_grids - 1)
+            if learn_denom:
+                self.denominator = torch.nn.Parameter(torch.full(grid.size(),self.denominator))
         elif denominator < 0:
             self.denominator = torch.abs(denominator*self.grid).clone()
             self.denominator = torch.clamp(self.denominator, min = 0.5)
@@ -428,7 +625,12 @@ class FastKANLayer(nn.Module):
         self.use_base_noise = False
         self.use_random_proj = False
         self.use_base_skip = False
-        self.use_half_grid = True
+        self.use_half_grid = False
+        self.learn_half = False
+        self.scale_tanh = False
+        self.rational = False
+        self.use_cuda_rbf = False
+        #print(f"CUDA RBF: {self.use_cuda_rbf}")
         
         if self.hadmard:
             self.w1 = nn.Parameter(torch.tensor(1.0)) 
@@ -441,6 +643,8 @@ class FastKANLayer(nn.Module):
             assert input_dim > 1, "Do not use layernorms on 1D inputs. Set `use_layernorm=False`."
             self.layernorm = nn.LayerNorm(input_dim)
 
+
+        
         if use_poly and not use_hankel:
             self.rbf = PolyBasisFunction(degree_poly)
             if not use_same_fn:
@@ -454,18 +658,27 @@ class FastKANLayer(nn.Module):
                 
 
         elif not use_hankel:
-            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            if self.use_cuda_rbf:
+                self.rbf = RadialBasisFunctionCUDA(grid_min, grid_max, num_grids, denominator = denominator)
+                
+            else:
+                self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             if not use_same_fn:
                 self.spline_linear = SplineLinear(input_dim * num_grids, output_dim, spline_weight_init_scale, init = init, degree = num_grids)
             else:
                 if self.use_same_weight:
                     self.spline_linear = SplineLinear(num_grids, output_dim, init_scale = spline_weight_init_scale, init = init)
                 else:
-                    self.spline_linear = tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
+                    #print("Using Shared Spline w Input")
+                    self.spline_linear = tied_input_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
                     
         else:
-            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            if self.use_cuda_rbf:
+                self.rbf = RadialBasisFunctionCUDA(grid_min, grid_max, num_grids, denominator = denominator)
+                
+            else:
+                self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
             self.spline_linear = HankelLinear(input_dim, output_dim, init_scale = spline_weight_init_scale, 
                                                        degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
         if self.parallel:
@@ -483,11 +696,18 @@ class FastKANLayer(nn.Module):
             self.fourier_layer = FourierLayer(input_dim, output_dim, N = N, P = P)
 
         if self.use_half_grid:
-            #self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids // 2, grid_type = grid_type, denominator = denominator)
-            self.learn_rbf = LearnableRadialBasisFunction(grid_min, grid_max, num_grids, grid_type = grid_type, denominator = denominator)
+            self.rbf = RadialBasisFunction(grid_min, grid_max, num_grids // 2, grid_type = grid_type, denominator = denominator)
+            #self.learn_rbf = LearnableRadialBasisFunction(grid_min, grid_max, num_grids//2, grid_type = grid_type, denominator = denominator, learn_grid = True,learn_denom = False)
+            self.learn_rbf = RadialBasisFunction(grid_min, grid_max, num_grids//2, grid_type = grid_type, denominator = denominator)
+
+        if self.rational:
+            #print("Using Rational Spline")
+            self.spline_linear = rational_tied_SplineLinear_FAST(input_dim, output_dim, init_scale = spline_weight_init_scale, degree = num_grids - 1, use_same_weight = use_same_weight, w_norm = w_norm)
+            
             
         self.use_base_update = use_base_update
         if use_base_update:
+            self.drop_path = 0.0
             self.base_activation = base_activation
             self.base_linear = nn.Linear(input_dim, output_dim)
 
@@ -500,21 +720,27 @@ class FastKANLayer(nn.Module):
     def forward(self, x, use_layernorm=True):
         if self.layernorm is not None and use_layernorm:
             spline_basis = self.rbf(self.layernorm(x))
-
             if self.use_half_grid:
-                #learned_spline_basis = self.learn_rbf(self.layernorm(x))
-                #spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
-                spline_basis = self.learn_rbf(self.layernorm(x))
+                if self.learn_half:
+                    learned_spline_basis = self.learn_rbf(self.layernorm(x))
+                    spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
+                else:
+                    spline_basis = spline_basis.repeat_interleave(2, dim=-1)
+                #spline_basis = self.learn_rbf(self.layernorm(x))
             #x = torch.clamp(x, min = self.grid_min, max = self.grid_max)
             #pass
             
         else:
             spline_basis = self.rbf(x)
             if self.use_half_grid:
-                #learned_spline_basis = self.learn_rbf(x)
-                #spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
-                spline_basis = self.learn_rbf(x)
+                if self.learn_half:
+                    learned_spline_basis = self.learn_rbf(x)
+                    spline_basis  = torch.cat((spline_basis, learned_spline_basis), -1)
+                else:
+                    spline_basis = spline_basis.repeat_interleave(2, dim=-1)
+                #spline_basis = self.learn_rbf(x)
 
+        #print('H',x.shape, spline_basis.shape)
         if self.parallel:
             ret1 = self.spline_linear1(spline_basis)
             ret2 = self.spline_linear2(spline_basis)
@@ -534,7 +760,10 @@ class FastKANLayer(nn.Module):
         else:
             ret = self.spline_linear(spline_basis.reshape(*spline_basis.shape[:-2], -1))
 
+        
         #ret = ret / self.input_dim
+        if self.scale_tanh:
+            ret = self.grid_max * torch.tanh(ret)
         #print(ret.requires_grad)
         if self.use_fourier:
             ret = ret + self.fourier_layer(x)
@@ -543,15 +772,20 @@ class FastKANLayer(nn.Module):
             ret = self.w1 * ret + self.w2 * (ret**2)
 
         if self.use_base_update:
-            if self.use_base_skip or self.use_random_proj:
-                base = F.linear(self.base_activation(x), self.base_linear)
+            r = np.random.rand(1)
+            if r < self.drop_path:
+                pass
             else:
-                if self.use_base_noise:
-                    base = self.base_linear(self.base_activation(x + torch.randn(1).item()))
+                if self.use_base_skip or self.use_random_proj:
+                    base = F.linear(self.base_activation(x), self.base_linear)
                 else:
-                    base = self.base_linear(self.base_activation(x))
-                
-            ret = ret + base
+                    if self.use_base_noise:
+                        base = self.base_linear(self.base_activation(x + torch.randn(1).item()))
+                    else:
+                        base = self.base_linear(self.base_activation(x))
+
+                #print(ret.shape, base.shape)
+                ret = ret + base
        # print(self.input_dim, self.output_dim, ret.requires_grad)
         return ret
         

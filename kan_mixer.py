@@ -323,7 +323,7 @@ class HireMLPNet(nn.Module):
 
 class KANMixer(nn.Module):
     def __init__(self,in_channels=3,img_size=32, patch_size=4, hidden_size=512, hidden_s=256, hidden_c=2048, num_layers=8, num_classes=10, drop_p=0., off_act=False, is_cls_token=False, use_poly = False, degree_poly = 3, use_base_update = True, base_activation = F.silu, use_same_fn = False, use_same_weight = False, use_pe = False, use_cpd = False, use_softmax_prod = False, num_grids = 8, 
-                 skip_min = 1, init = 'default',spline_weight_init_scale = 0.1, grid = [-1,-1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False, use_fourier = False):
+                 skip_min = 1, init = 'default',spline_weight_init_scale = [0.1], grid = [-1,-1], grid_type = 'uniform', denominator = 0, w_norm = 0, use_hankel = False, use_fourier = False):
         super(KANMixer, self).__init__()
         num_patches = img_size // patch_size * img_size // patch_size
         # (b, c, h, w) -> (b, d, h//p, w//p) -> (b, h//p*w//p, d)
@@ -370,15 +370,23 @@ class KANMixer(nn.Module):
         #    ]
         #)
         delta_skip = (1-skip_min)/num_layers
+        grid_sizes = [num_grids for i in range(num_layers//2)] + [num_grids//2 for i in range(num_layers - num_layers//2)]
+        #grid_sizes = [num_grids for i in range(num_layers//3)] + [num_grids//2 for i in range(num_layers - num_layers//3)] + [num_grids//4 for i in range(num_layers - 2*num_layers//3)]
+        
+        #grid_sizes = [num_grids for i in range(num_layers)] 
+        
         self.mixer_layers = nn.Sequential(
             *[
-                MixerLayer(num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,num_grids = num_grids, skip_param = (1 - delta_skip*i), 
+                MixerLayer(num_patches, hidden_size, hidden_s, hidden_c, drop_p, off_act, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, use_softmax_prod = use_softmax_prod,
+                           #num_grids = num_grids, 
+                           num_grids = grid_sizes[i], 
+                           skip_param = (1 - delta_skip*i), 
                            init = init, spline_weight_init_scale = spline_weight_init_scale, grid= grid, grid_type = grid_type, denominator = denominator, w_norm = w_norm, use_hankel = use_hankel, use_fourier = use_fourier) 
             for i in range(num_layers)
             ]
         )
         self.ln = nn.LayerNorm(hidden_size)
-
+        
         self.clf = KANLinear(hidden_size, num_classes, use_poly = use_poly, degree_poly = degree_poly, use_base_update = use_base_update, 
                              base_activation = base_activation, use_same_fn = use_same_fn, use_same_weight = use_same_weight, use_cpd = use_cpd, 
                              use_softmax_prod = use_softmax_prod, num_grids = num_grids, init = init, spline_weight_init_scale = spline_weight_init_scale, 

@@ -2,9 +2,13 @@ import sys
 sys.path.append('./AutoAugment/')
 
 import torch
+import os
 import torchvision
 import torchvision.transforms as transforms
 from AutoAugment.autoaugment import CIFAR10Policy, SVHNPolicy, ImageNetPolicy
+from torch.utils.data import DataLoader, DistributedSampler
+from torchvision.transforms.v2 import RandomErasing
+
 #from timm.data import create_dataset, create_loader, resolve_data_config, Mixup, FastCollateMixup, AugMixDataset
 
 """
@@ -18,6 +22,9 @@ from ffcv.fields import IntField, RGBImageField
 import numpy as np
 """
 #ffcv.transforms.NormalizeImage(mean: ndarray, std: ndarray, type: dtype)
+
+import os
+import psutil
 
 
 
@@ -107,23 +114,48 @@ def get_dataloaders(args):
     elif args.dataset == "imgnet":
         #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
         #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
-        train_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/train', transform=train_transform)
-        test_ds = torchvision.datasets.ImageFolder('../data/imagenet-100/val', transform=test_transform)
+        train_ds = torchvision.datasets.ImageFolder('../data/imagenet100/train', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../data/imagenet100/val', transform=test_transform)
         args.num_classes = 100
+
+    elif args.dataset == "imgnet200":
+        #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
+        #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
+        
+
+        train_ds = torchvision.datasets.ImageFolder('../data/imagenet100-2/train/', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../data/imagenet100-2/val/', transform=test_transform)
+
+        args.num_classes = 100
+
+    elif args.dataset == "imgnet1k":
+        #train_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/train', transform=train_transform)
+        #test_ds = torchvision.datasets.ImageFolder('/scratch/vagrawal/data/imagenet-100/val', transform=test_transform)
+        
+
+        train_ds = torchvision.datasets.ImageFolder('../data/ILSVRC/Data/CLS-LOC/train/', transform=train_transform)
+        test_ds = torchvision.datasets.ImageFolder('../data/ILSVRC/Data/CLS-LOC/val/', transform=test_transform)
+        args.num_classes = 1000
+        
     else:
         raise ValueError(f"No such dataset:{args.dataset}")
 
 
     
+    train_sampler = DistributedSampler(train_ds, rank = args.rank, num_replicas=torch.distributed.get_world_size())
+    #test_sampler = DistributedSampler(test_ds, rank = args.rank, num_replicas=torch.distributed.get_world_size())
+    effective_bs = args.batch_size // torch.distributed.get_world_size()
     
-    train_dl = torch.utils.data.DataLoader(train_ds, batch_size=args.batch_size, prefetch_factor=4,shuffle=True, num_workers=args.num_workers, pin_memory=True)
-    test_dl = torch.utils.data.DataLoader(test_ds, batch_size=args.eval_batch_size, shuffle=False, prefetch_factor=4,num_workers=args.num_workers, pin_memory=True)
+    train_dl = torch.utils.data.DataLoader(train_ds, batch_size=effective_bs, prefetch_factor=2, num_workers=args.num_workers, pin_memory=True, sampler=train_sampler, drop_last = True, persistent_workers=False)
+    
+    test_dl = torch.utils.data.DataLoader(test_ds, batch_size=effective_bs, prefetch_factor=4,num_workers=args.num_workers, pin_memory=True, drop_last = False, 
+                                          persistent_workers=False)#, sampler=test_sampler,)
 
     return train_dl, test_dl
 
 def get_transform(args):
-    if args.dataset in ["c10", "c100", 'svhn', 'imgnet']:
-        if args.dataset != 'imgnet':
+    if args.dataset in ["c10", "c100", 'svhn', 'imgnet','imgnet200','imgnet1k']:
+        if "imgnet" not in args.dataset:
             args.padding=4
             args.size = 32
         else:
@@ -136,7 +168,7 @@ def get_transform(args):
             args.mean, args.std = [0.5071, 0.4867, 0.4408], [0.2675, 0.2565, 0.2761]
         elif args.dataset=="svhn":
             args.mean, args.std = [0.4377, 0.4438, 0.4728], [0.1980, 0.2010, 0.1970]
-        elif args.dataset=="imgnet":
+        elif "imgnet" in args.dataset:
             args.mean, args.std = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
     else:
         args.padding=28
@@ -151,12 +183,12 @@ def get_transform(args):
             train_transform_list.append(CIFAR10Policy())
         elif args.dataset == 'svhn':
             train_transform_list.append(SVHNPolicy())
-        elif args.dataset == 'imgnet':
+        elif "imgnet" in args.dataset:
             train_transform_list.append(ImageNetPolicy())
         else:
             print(f"No AutoAugment for {args.dataset}")   
         
-    if args.dataset=="imgnet":
+    if "imgnet" in args.dataset:
         train_transform_list = [transforms.Resize(args.size)] + train_transform_list
         #train_transform_list = [transforms.RandomResizedCrop(args.size)] + [transforms.RandAugment(num_ops= args.rand_augment_ops, magnitude=args.rand_augment_mag)]
         
@@ -166,11 +198,12 @@ def get_transform(args):
             transforms.Normalize(
                 mean=args.mean,
                 std = args.std
-            )
+            ),
+            RandomErasing(args.re_prob)
         ]
     )
     
-    if args.dataset=="imgnet":
+    if "imgnet" in args.dataset:
         test_transform = transforms.Compose([
         transforms.Resize((args.size, args.size)),
         transforms.ToTensor(),
